@@ -3,75 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Can Barış ALTINÖZ - Python 3 ile İleri Düzey Geliştirme</title>
-    <meta name="description" content="Can Barış ALTINÖZ'ün Python 3 kullanarak ileri düzey yazılım geliştirme alanındaki uzmanlıklarını paylaştığı kişisel web sitesi. Asenkron programlama, web geliştirme, veri bilimi ve optimizasyon konularına odaklanmaktadır.">
+    <title>Can Barış ALTINÖZ - İleri Düzey Python 3 Geliştirme</title>
+    <meta name="description" content="Can Barış ALTINÖZ'ün ileri düzey Python 3 geliştirme prensipleri, dilin temel yetenekleri ve karmaşık sorunlara çözüm yaklaşımları üzerine kişisel web sitesi.">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .hero {
+            background-color: #2d3748;
+            color: #f7fafc;
+            padding: 4rem 0;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .hero-content {
+            max-width: 768px;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e0;
+            margin-bottom: 1rem;
+        }
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        }
+        .topic-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease-in-out;
+        }
+        .topic-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .topic-link {
+            color: #4a5568;
+            transition: color 0.3s ease-in-out;
+        }
+        .topic-link:hover {
+            color: #2b6cb0;
+        }
+        .solution-list {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        .solution-item {
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans antialiased">
     <div class="container mx-auto py-10">
-        <header class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <div class="flex items-center mb-4">
-                <img src="profil_fotografi.jpg" alt="Can Barış ALTINÖZ Profil Fotoğrafı" class="rounded-full w-16 h-16 mr-4 shadow-sm">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-800">Can Barış ALTINÖZ</h1>
-                    <p class="text-lg text-gray-600">İleri Düzey Python 3 Geliştiricisi</p>
-                </div>
+        <header class="hero">
+            <div class="hero-content">
+                <img src="profil_fotografi.jpg" alt="Can Barış ALTINÖZ Profil Fotoğrafı" class="profile-image">
+                <h1 class="hero-title">Can Barış ALTINÖZ</h1>
+                <p class="hero-subtitle">İleri Düzey Python 3 Uzmanı</p>
+                <p class="text-lg text-gray-300 leading-relaxed">Python 3'ün temelindeki zarafet ve güçle, karmaşık yazılım mimarilerine ve algoritmik zorluklara derinlemesine çözümler sunuyorum. Bu sitede, Python 3'ün ileri düzey kavramlarına dair düşüncelerimi ve yaklaşımlarımı paylaşacağım.</p>
             </div>
-            <p class="text-gray-700 leading-relaxed">Python 3'ün gücüyle karmaşık yazılım sorunlarına yenilikçi çözümler üretiyorum. Bu sitede, ileri düzey Python geliştirme teknikleri, projelerim ve düşüncelerimi paylaşacağım.</p>
         </header>
 
         <main class="bg-white rounded-lg shadow-md p-8">
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Öne Çıkan Konular</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">İleri Düzey Python 3 Kavramları</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gray-100 rounded-lg p-6 shadow-sm hover:shadow-md transition duration-300">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Asenkron Programlama</h3>
-                        <p class="text-gray-700 leading-relaxed">Python 3'teki `asyncio` kütüphanesi ile yüksek performanslı ve eş zamanlı uygulamalar geliştirme üzerine incelemeler ve yaklaşımlar.</p>
-                        <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Daha Fazla Oku</a>
+                    <div class="topic-card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Asenkron Programlama Temelleri</h3>
+                        <p class="text-gray-700 leading-relaxed">Python 3'ün yerleşik asenkron yetenekleri ve olay döngüsü mekanizmalarını kullanarak yüksek performanslı ve non-blocking uygulamalar geliştirme prensipleri.</p>
+                        <a href="#" class="topic-link mt-2 inline-block">Daha Fazla İncele</a>
                     </div>
-                    <div class="bg-gray-100 rounded-lg p-6 shadow-sm hover:shadow-md transition duration-300">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Web Geliştirme</h3>
-                        <p class="text-gray-700 leading-relaxed">Python 3 ile güçlü web framework'leri (Django, FastAPI) kullanarak modern ve ölçeklenebilir web uygulamaları geliştirme stratejileri.</p>
-                        <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Daha Fazla Oku</a>
+                    <div class="topic-card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Metaprogramlama ve Yansıtma (Reflection)</h3>
+                        <p class="text-gray-700 leading-relaxed">Python 3'ün dinamik yapısı sayesinde çalışma zamanında sınıfları, fonksiyonları ve tipleri inceleme ve değiştirme teknikleri.</p>
+                        <a href="#" class="topic-link mt-2 inline-block">Daha Fazla İncele</a>
                     </div>
-                    <div class="bg-gray-100 rounded-lg p-6 shadow-sm hover:shadow-md transition duration-300">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Veri Bilimi ve Analizi</h3>
-                        <p class="text-gray-700 leading-relaxed">Python 3'ün veri bilimi ekosistemi (Pandas, NumPy) ile büyük veri kümelerini işleme, analiz etme ve görselleştirme teknikleri.</p>
-                        <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Daha Fazla Oku</a>
+                    <div class="topic-card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Bellek Yönetimi ve Optimizasyon</h3>
+                        <p class="text-gray-700 leading-relaxed">Python 3'teki bellek yönetimi prensipleri, garbage collection mekanizması ve yüksek performanslı uygulamalar için bellek optimizasyonu stratejileri.</p>
+                        <a href="#" class="topic-link mt-2 inline-block">Daha Fazla İncele</a>
                     </div>
-                    <div class="bg-gray-100 rounded-lg p-6 shadow-sm hover:shadow-md transition duration-300">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Performans ve Optimizasyon</h3>
-                        <p class="text-gray-700 leading-relaxed">Python 3 uygulamalarının performansını artırma, darboğazları tespit etme ve optimizasyon stratejileri üzerine ipuçları ve teknikler.</p>
-                        <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Daha Fazla Oku</a>
+                    <div class="topic-card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Eş Zamanlılık ve Paralellik</h3>
+                        <p class="text-gray-700 leading-relaxed">Python 3'te thread'ler, süreçler ve diğer eş zamanlılık mekanizmalarını kullanarak performansı artırma ve karmaşık işlemleri yönetme yaklaşımları.</p>
+                        <a href="#" class="topic-link mt-2 inline-block">Daha Fazla İncele</a>
                     </div>
                 </div>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Projeler</h2>
-                <p class="text-gray-700 leading-relaxed">Python 3 ile geliştirdiğim bazı önemli projeler ve bu projelerdeki deneyimlerim.</p>
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-gray-100 rounded-lg p-4 shadow-sm">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Proje 1 Adı</h4>
-                        <p class="text-gray-700 leading-relaxed text-sm">Kısa proje açıklaması...</p>
-                        <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Detayları Gör</a>
-                    </div>
-                    <div class="bg-gray-100 rounded-lg p-4 shadow-sm">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Proje 2 Adı</h4>
-                        <p class="text-gray-700 leading-relaxed text-sm">Kısa proje açıklaması...</p>
-                        <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Detayları Gör</a>
-                    </div>
-                    <div class="bg-gray-100 rounded-lg p-4 shadow-sm">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Proje 3 Adı</h4>
-                        <p class="text-gray-700 leading-relaxed text-sm">Kısa proje açıklaması...</p>
-                        <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Detayları Gör</a>
-                    </div>
-                </div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Çözüm Yaklaşımlarım</h2>
+                <p class="text-gray-700 leading-relaxed">Python 3'ün temel gücünü kullanarak çeşitli ileri düzey yazılım sorunlarına nasıl yaklaştığıma dair genel prensipler ve düşünce süreçleri.</p>
+                <ul class="solution-list text-gray-700 leading-relaxed mt-4">
+                    <li class="solution-item">Karmaşık sistemlerin analizi ve Python 3 ile modelleme stratejileri.</li>
+                    <li class="solution-item">Ölçeklenebilir ve sürdürülebilir yazılım mimarileri tasarlama prensipleri.</li>
+                    <li class="solution-item">Performans odaklı algoritmalar geliştirme ve Python 3'te uygulama teknikleri.</li>
+                    <li class="solution-item">Test güdümlü geliştirme (TDD) prensipleri ve Python 3 ile uygulama yaklaşımları.</li>
+                </ul>
             </section>
 
             <section>
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hakkımda</h2>
-                <p class="text-gray-700 leading-relaxed">Ben Can Barış ALTINÖZ, ileri düzey Python 3 geliştirme konusunda tutkulu bir yazılımcıyım. Yüksek performanslı uygulamalar, ölçeklenebilir web sistemleri ve etkili veri işleme çözümleri geliştirmeye odaklanıyorum...</p>
+                <p class="text-gray-700 leading-relaxed">Ben Can Barış ALTINÖZ, Python 3'ün derinliklerine inmekten ve dilin sunduğu temel araçlarla karmaşık sorunlara zarif çözümler üretmekten keyif alan bir geliştiriciyim...</p>
                 <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Daha Fazla Bilgi</a>
             </section>
         </main>
