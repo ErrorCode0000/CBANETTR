@@ -3,85 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Can Barış ALTINÖZ - İleri Düzey Geliştirme: Mikroservis Mimarisine Giriş</title>
-    <meta name="description" content="Can Barış ALTINÖZ'ün ileri düzey yazılım geliştirme günlüğü. Mikroservis mimarisinin temelleri, avantajları ve yönetim zorlukları üzerine bir inceleme.">
+    <title>Can Barış ALTINÖZ - Python 3 ile İleri Düzey Geliştirme</title>
+    <meta name="description" content="Can Barış ALTINÖZ'ün Python 3 kullanarak ileri düzey yazılım geliştirme konularındaki günlüğü. Asenkron programlama, framework'ler, veri işleme ve optimizasyon teknikleri üzerine notlar.">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 font-sans antialiased">
     <div class="container mx-auto py-10">
         <header class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">İleri Düzey Yazılım Geliştirme: Can Barış ALTINÖZ</h1>
-            <p class="text-lg text-gray-600">Bu günlükte, karmaşık yazılım geliştirme sorunlarına yönelik çözüm yaklaşımlarımı, ileri düzey algoritmaları ve yazılım mimarilerini inceleyeceğim.</p>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Python 3 ile İleri Düzey Geliştirme: Can Barış ALTINÖZ</h1>
+            <p class="text-lg text-gray-600">Bu günlükte, Python 3'ün güçlü yönlerini kullanarak karmaşık yazılım geliştirme sorunlarına çözüm yaklaşımlarımı inceleyeceğim.</p>
         </header>
 
         <main class="bg-white rounded-lg shadow-md p-8">
             <article>
                 <header class="mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">İlk İnceleme: Büyük Ölçekli Sistemlerde Mikroservis Mimarisine Giriş</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">İlk İnceleme: Python 3'te Asenkron Programlama ve `asyncio` Kütüphanesi</h2>
                     <p class="text-sm text-gray-500">Yayın Tarihi: 19 Nisan 2025</p>
                 </header>
 
-                <p class="text-gray-700 leading-relaxed mb-4">Merhaba, ben Can Barış ALTINÖZ. Bu günlükte, büyük ölçekli ve yüksek trafikli uygulamaların geliştirilmesinde kritik rol oynayan <a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">mikroservis mimarisine</a> ve bu mimarinin yönetimindeki temel zorluklara odaklanacağım. Monolitik mimarilerin ölçeklenebilirlik ve sürdürülebilirlik sorunlarına karşı bir çözüm olarak ortaya çıkan mikroservisler, beraberinde getirdiği karmaşıklıklarla da başa çıkmayı gerektirir.</p>
+                <p class="text-gray-700 leading-relaxed mb-4">Merhaba, ben Can Barış ALTINÖZ. Bu günlükte, Python 3'ün sunduğu modern özelliklerden biri olan asenkron programlamaya ve bu alandaki güçlü kütüphanesi `asyncio`ya odaklanacağım. Özellikle I/O yoğun işlemler (ağ istekleri, dosya okuma/yazma vb.) sırasında performansı önemli ölçüde artırabilen asenkron yapılar, modern yazılım geliştirmenin vazgeçilmez bir parçası haline gelmiştir.</p>
 
                 <section class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Mikroservis Mimarisi: Temel Kavramlar ve Avantajları</h3>
-                    <p class="text-gray-700 leading-relaxed mb-4">Mikroservis mimarisi, tek bir büyük uygulama yerine, işlevsel olarak bağımsız ve küçük servislerin bir araya gelmesiyle oluşan bir yaklaşımı ifade eder. Bu mimarinin temel avantajları arasında, bağımsız geliştirme ve dağıtım, farklı teknolojileri kullanabilme esnekliği, daha iyi hata izolasyonu ve ölçeklenebilirlik sayılabilir.</p>
-                    <img src="mikroservis_diyagrami.png" alt="Mikroservis Mimarisi Şeması" class="rounded-md shadow-sm" style="max-width: 100%;">
-                    <p class="text-sm text-gray-500 mt-2"><em>Örnek bir mikroservis mimarisi şeması. (Bu görselin yerine gerçek bir görsel eklemelisiniz)</em></p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Asenkron Programlamanın Temelleri ve Avantajları</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4">Senkron programlamada işlemler sırayla yürütülürken, asenkron programlamada bir işlem başlatıldıktan sonra tamamlanması beklenmeden diğer işlemlere geçilebilir. İşlem tamamlandığında ise bir "callback" veya benzeri bir mekanizma ile sonuçlar elde edilir. Bu yaklaşım, özellikle birden fazla bekleyen işlem olduğunda kaynak kullanımını optimize eder ve uygulamanın genel yanıt verme hızını artırır. Python'daki `async` ve `await` anahtar kelimeleri, asenkron fonksiyonlar tanımlamayı ve asenkron işlemleri beklemeyi kolaylaştırır.</p>
+                    <p class="text-gray-700 leading-relaxed mt-2">Asenkron programlamanın Python 3'teki uygulamalarına dair daha detaylı örnekler ve açıklamalar için Python'ın resmi `asyncio` kütüphanesi dokümantasyonuna göz atabilirsiniz.</p>
                 </section>
 
                 <section class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">2. Servisler Arası İletişim ve Yönetim Zorlukları</h3>
-                    <p class="text-gray-700 leading-relaxed mb-4">Mikroservis mimarisinde servisler arasındaki iletişim, genellikle <a href="https://restfulapi.net/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">RESTful API'ler</a> veya mesaj kuyrukları (message queues) aracılığıyla asenkron olarak sağlanır. Bu iletişim yöntemlerinin doğru bir şekilde yönetilmesi, gecikme (latency), güvenilirlik ve veri tutarlılığı gibi konularda önemli zorluklar yaratabilir. <a href="https://microservices.io/patterns/communication-style/api-gateway.html" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">API Gateway</a>, yük dengeleme (load balancing) ve devre kesici (circuit breaker) gibi desenler, bu zorlukların üstesinden gelmek için yaygın olarak kullanılır.</p>
-
-                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Örnek: Basit bir API Gateway (Node.js ile)</h4>
-                    <pre class="bg-gray-200 rounded-md p-4 overflow-auto">
-                        <code class="language-javascript text-sm text-gray-800">
-                            const express = require('express');
-                            const axios = require('axios');
-                            const app = express();
-                            const serviceRegistry = {
-                              'user-service': 'http://localhost:3001',
-                              'product-service': 'http://localhost:3002'
-                            };
-
-                            app.use('/:serviceName/:path', async (req, res) => {
-                              const { serviceName, path } = req.params;
-                              const targetService = serviceRegistry[serviceName];
-
-                              if (targetService) {
-                                try {
-                                  const response = await axios.get(\`\${targetService}/\${path}\`);
-                                  res.json(response.data);
-                                } catch (error) {
-                                  res.status(500).json({ error: 'Service unavailable' });
-                                }
-                              } else {
-                                res.status(404).json({ error: 'Service not found' });
-                              }
-                            });
-
-                            app.listen(3000, () => console.log('API Gateway is running on port 3000'));
-                        </code>
-                    </pre>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">2. `asyncio` ile Eş Zamanlılık Yönetimi</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4">`asyncio`, asenkron görevleri yönetmek için çeşitli araçlar sunar. `asyncio.gather()` ile birden fazla asenkron görevi eş zamanlı olarak çalıştırabilir ve sonuçlarını toplayabilirsiniz. `asyncio.create_task()` ise bağımsız görevler oluşturmanızı sağlar. Ayrıca, paylaşılan kaynaklara erişimi kontrol etmek ve yarış durumlarını önlemek için `asyncio.Semaphore` ve `asyncio.Lock` gibi senkronizasyon primitifleri mevcuttur.</p>
+                    <p class="text-gray-700 leading-relaxed mt-2">`asyncio` ile eş zamanlılık yönetimi hakkında daha fazla bilgi için Nick Coghlan'ın "Asynchronous Programming in Python" makalesini inceleyebilirsiniz.</p>
                 </section>
 
                 <section class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Veri Tutarlılığı ve Dağıtık İşlemler</h3>
-                    <p class="text-gray-700 leading-relaxed mb-4">Mikroservis mimarisinde her servis kendi veri tabanına sahip olabilir. Bu durum, dağıtık işlemler sırasında veri tutarlılığını sağlamayı zorlaştırır. İki aşamalı commit (two-phase commit) veya <a href="https://microservices.io/patterns/data/saga.html" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Saga deseni</a> gibi yaklaşımlar, farklı servisler arasındaki işlemleri tutarlı bir şekilde yönetmek için kullanılır. Ancak bu desenlerin implementasyonu ve yönetimi karmaşıklıklar içerebilir.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Python 3'te İleri Düzey Veri İşleme Teknikleri</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4">Python 3, veri bilimi ve mühendisliği alanlarında da güçlü araçlar sunar. `pandas` kütüphanesi ile büyük veri kümelerini etkili bir şekilde işleyebilir, `numpy` ile sayısal işlemleri optimize edebilir ve asenkron yaklaşımlarla bu işlemleri hızlandırabiliriz.</p>
+                    <p class="text-gray-700 leading-relaxed mt-2">Python'da ileri düzey veri işleme teknikleri hakkında daha fazla bilgi için "Python for Data Analysis" kitabını ve ilgili kütüphanelerin (pandas, numpy) dokümantasyonlarını inceleyebilirsiniz.</p>
                 </section>
 
                 <section>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Yaşayan Yaş</h3>
-                    <p class="text-gray-700 leading-relaxed">Şu anki yaşayan yaşım: <span id="preciseAge" class="font-semibold"></span></p>
-                </section>
-
-                <section>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">İlgili Kaynaklar</h3>
-                    <ul class="list-disc list-inside text-gray-700 leading-relaxed">
-                        <li class="mb-2"><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Microservices (Martin Fowler)</a></li>
-                        <li class="mb-2"><a href="https://microservices.io/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Microservices.io</a></li>
-                    </ul>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Gelecek İncelemeler</h3>
+                    <p class="text-gray-700 leading-relaxed">Gelecek yazılarımda, Python 3 ile web geliştirme framework'leri (Django, FastAPI), gelişmiş veri analizi teknikleri ve performans optimizasyonu konularına değinmeyi planlıyorum.</p>
                 </section>
 
             </article>
@@ -91,32 +53,5 @@
             <p>&copy; 2025 Can Barış ALTINÖZ.</p>
         </footer>
     </div>
-
-    <script>
-        function calculatePreciseAge(birthDate) {
-          const now = new Date();
-          const birthDateObj = new Date(birthDate);
-          let difference = now.getTime() - birthDateObj.getTime();
-
-          const seconds = Math.floor(difference / 1000) % 60;
-          const minutes = Math.floor(difference / (1000 * 60)) % 60;
-          const hours = Math.floor(difference / (1000 * 60 * 60)) % 24;
-          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-          const years = Math.floor(days / 365.25);
-
-          return `${years} yıl, ${days % 365} gün, ${hours} saat, ${minutes} dakika, ${seconds} saniye`;
-        }
-
-        function updateAge() {
-          const birthDate = "2014-01-02T00:00:00+03:00";
-          const preciseAge = calculatePreciseAge(birthDate);
-          document.getElementById("preciseAge").textContent = preciseAge;
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-          updateAge();
-          setInterval(updateAge, 1000);
-        });
-    </script>
 </body>
 </html>
