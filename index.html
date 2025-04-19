@@ -107,12 +107,12 @@
                     <div class="topic-card p-6">
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Yüksek Performanslı Uygulamalar Geliştirme</h3>
                         <p class="text-gray-700 leading-relaxed">Python 3 ile yüksek performans gerektiren uygulamaların geliştirilmesine yönelik temel prensipler ve yaklaşımlar.</p>
-                        <a href="#" class="topic-link-button" onclick="alert('Bu butonlar daha bitmemiştir!')">Daha Fazla İncele</a>
+                        <a href="#" class="topic-link-button">Daha Fazla İncele</a>
                     </div>
                     <div class="topic-card p-6">
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Dinamik ve Esnek Kod Yazma Teknikleri</h3>
                         <p class="text-gray-700 leading-relaxed">Python 3'ün dinamik yapısının sunduğu imkanlarla esnek ve uyarlanabilir kod geliştirme yöntemleri.</p>
-                        <a href="#" class="topic-link-button" onclick="alert('Bu butonlar daha bitmemiştir!')">Daha Fazla İncele</a>
+                        <a href="#" class="topic-link-button">Daha Fazla İncele</a>
                     </div>
                 </div>
             </section>
@@ -153,11 +153,10 @@
         </footer>
     </div>
     <script>
-        // Tüm "Daha Fazla İncele" butonlarına olay dinleyicisi ekle
         const inceleButonlari = document.querySelectorAll('.topic-link-button');
         inceleButonlari.forEach(buton => {
             buton.addEventListener('click', function(event) {
-                event.preventDefault(); // Sayfanın yukarı kaymasını engelle
+                event.preventDefault();
                 alert('Bu butonlar daha bitmemiştir!');
             });
         });
