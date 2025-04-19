@@ -7,86 +7,20 @@
     <meta name="description" content="Can Barış ALTINÖZ'ün ileri düzey Python 3 geliştirme prensipleri, dilin temel yetenekleri ve karmaşık sorunlara çözüm yaklaşımları üzerine kişisel web sitesi.">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        .hero {
-            background-color: #2d3748;
-            color: #f7fafc;
-            padding: 4rem 0;
-            border-radius: 0.5rem;
-            margin-bottom: 2rem;
-        }
-        .hero-content {
-            max-width: 768px;
-            margin: 0 auto;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .hero-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: #cbd5e0;
-            margin-bottom: 1rem;
-        }
-        .profile-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-        }
-        .topic-card {
-            background-color: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease-in-out;
-        }
-        .topic-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .topic-link-button {
-            display: inline-block;
-            margin-top: 0.5rem;
-            padding: 0.5rem 1rem;
-            background-color: #64748b;
-            color: #f7fafc;
-            border-radius: 0.25rem;
-            text-decoration: none;
-            transition: background-color 0.3s ease-in-out;
-            cursor: pointer;
-        }
-        .topic-link-button:hover {
-            background-color: #4a5568;
-        }
-        .solution-list {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-        }
-        .solution-item {
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: flex-start;
-        }
-        .solution-item::before {
-            margin-right: 0.5rem;
-        }
-        .related-link-card {
-            background-color: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        .about-interests {
-            margin-top: 1rem;
-            font-style: italic;
-            color: #718096;
-        }
+        .hero { background-color: #2d3748; color: #f7fafc; padding: 4rem 0; border-radius: 0.5rem; margin-bottom: 2rem; }
+        .hero-content { max-width: 768px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .hero-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .hero-subtitle { font-size: 1.25rem; color: #cbd5e0; margin-bottom: 1rem; }
+        .profile-image { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); }
+        .topic-card { background-color: #fff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); transition: all 0.3s ease-in-out; }
+        .topic-card:hover { transform: translateY(-4px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .topic-link-button { display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #64748b; color: #f7fafc; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.3s ease-in-out; cursor: pointer; }
+        .topic-link-button:hover { background-color: #4a5568; }
+        .solution-list { list-style-type: disc; padding-left: 1.5rem; }
+        .solution-item { margin-bottom: 0.75rem; display: flex; align-items: flex-start; }
+        .solution-item::before { margin-right: 0.5rem; }
+        .related-link-card { background-color: #fff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); padding: 1rem; margin-bottom: 1rem; }
+        .about-interests { margin-top: 1rem; font-style: italic; color: #718096; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans antialiased">
