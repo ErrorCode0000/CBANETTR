@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Candaş'ın Dünyası</title>
+    <meta name="description" content="Ali Candaş'ın ilgi alanları, izlediği filmler, oynadığı oyunlar ve düşünceleri.">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .hero { background-color: #2d3748; color: #f7fafc; padding: 4rem 0; border-radius: 0.5rem; margin-bottom: 2rem; }
+        .hero-content { max-width: 768px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .hero-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .hero-subtitle { font-size: 1.25rem; color: #cbd5e0; margin-bottom: 1rem; }
+        .profile-image { display: none; width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); }
+        .game-container { margin-top: 2rem; border: 1px solid #cbd5e0; border-radius: 0.5rem; overflow: hidden; }
+        .game-iframe { width: 100%; height: 400px; border: none; }
+        .movie-list, .game-list { list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; }
+        .movie-item, .game-item { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <div class="container mx-auto py-10">
+        <header class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Ali Candaş'ın Dünyası</h1>
+                <p class="hero-subtitle">Ali Candaş'ın kişisel blogu</p>
+                <p class="text-lg text-gray-300 leading-relaxed">Bu blogda Ali Candaş'ın ilgi alanlarına, düşüncelerine, izlediği filmlere ve oynadığı oyunlara göz atabilirsiniz.</p>
+            </div>
+        </header>
+
+        <main class="bg-white rounded-lg shadow-md p-8">
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hakkımda</h2>
+                <p class="text-gray-700 leading-relaxed">Ben Ali Candaş. [Buraya kardeşinin kendini tanıtacağı bir şeyler yazabilirsin].</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Düşüncelerim</h2>
+                <p class="text-gray-700 leading-relaxed">[Buraya kardeşinin günlük hayata, hobilerine veya aklına gelen herhangi bir konudaki düşüncelerini yazabilirsin].</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Filmler</h2>
+                <p class="text-gray-700 leading-relaxed">İzlemeyi sevdiğim filmler:</p>
+                <ul class="movie-list">
+                    <li class="movie-item">[Film Adı 1]</li>
+                    <li class="movie-item">[Film Adı 2]</li>
+                    <li class="movie-item">[Film Adı 3]</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Oyunlar</h2>
+                 <p class="text-gray-700 leading-relaxed">Oynamayı sevdiğim oyunlar:</p>
+                <ul class="game-list">
+                    <li class="game-item">[Oyun Adı 1]</li>
+                    <li class="game-item">[Oyun Adı 2]</li>
+                     <li class="game-item">[Oyun Adı 3]</li>
+                </ul>
+                <div class="game-container">
+                    <iframe src="https://classic-pong.glitch.me/" class="game-iframe"></iframe>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-white rounded-lg shadow-md p-4 mt-8 text-center text-gray-600">
+            <p>&copy; 2025 Ali Candaş.</p>
+        </footer>
+    </div>
+</body>
+</html>
