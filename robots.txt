@@ -1,3 +1,4 @@
+user-agent: *
+allow: *
 disallow: /CNAME
 disallow: /LICENSE
-sitemap: https://barisaltinoz.com.tr/index.html
