@@ -1,4 +1,6 @@
 user-agent: *
-allow: *
 disallow: /CNAME
 disallow: /LICENSE
+allow: /index.html
+allow: /candas.html
+allow: /profil_fotografi.jpg
