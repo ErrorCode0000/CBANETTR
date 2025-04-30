@@ -5,3 +5,5 @@ allow: /index.html
 allow: /candas.html
 allow: /profil_fotografi.jpg
 allow: /favicon.ico
+allow: /
+allow: /robots.txt
