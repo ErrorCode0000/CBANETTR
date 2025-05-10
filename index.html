@@ -9,58 +9,65 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        .hero { background-color: #2d3748; color: #f7fafc; padding: 4rem 0; border-radius: 0.5rem; margin-bottom: 2rem; }
+        /* Daha yüksek kontrast için renk paleti ve temel stil optimizasyonları */
+        body { background-color: #1a202c; color: #f0f4f8; font-family: sans-serif; line-height: 1.6; margin: 0; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .hero { background-color: #2d3748; color: #edf2f7; padding: 3rem 0; border-radius: 0.5rem; margin-bottom: 1.5rem; }
         .hero-content { max-width: 768px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .hero-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .hero-subtitle { font-size: 1.25rem; color: #cbd5e0; margin-bottom: 1rem; }
-        .profile-image { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); }
-        .topic-card { background-color: #fff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); transition: all 0.3s ease-in-out; }
-        .topic-card:hover { transform: translateY(-4px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        .topic-link-button { display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #64748b; color: #f7fafc; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.3s ease-in-out; cursor: pointer; }
-        .topic-link-button:hover { background-color: #4a5568; }
-        .solution-list { list-style-type: disc; padding-left: 1.5rem; }
+        .hero-title { font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .hero-subtitle { font-size: 1rem; color: #a0aec0; margin-bottom: 1rem; }
+        .profile-image { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+        .topic-card { background-color: #374151; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .topic-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .topic-link-button { display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #4a5568; color: #edf2f7; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.2s ease-in-out; cursor: pointer; font-size: 0.9rem; }
+        .topic-link-button:hover { background-color: #64748b; }
+        .solution-list { list-style-type: disc; padding-left: 1.2rem; color: #d1d5db; font-size: 0.95rem; }
         .solution-item { margin-bottom: 0.75rem; display: flex; align-items: flex-start; }
-        .solution-item::before { margin-right: 0.5rem; }
-        .related-link-card { background-color: #fff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); padding: 1rem; margin-bottom: 1rem; }
-        .about-interests { margin-top: 1rem; font-style: italic; color: #718096; }
-        .captcha-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 50; }
-        .captcha-container { background-color: #fff; color: #2d3748; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
-        .hidden { display: none !important; }
+        .solution-item::before { content: "\2022"; color: #a0aec0; font-weight: bold; display: inline-block; width: 0.8em; margin-left: -0.8em; margin-right: 0.4rem; }
+        .related-link-card { background-color: #374151; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); padding: 1rem; margin-bottom: 1rem; }
+        .related-link-card h2 { color: #edf2f7; font-size: 1.5rem; margin-bottom: 0.75rem; }
+        .related-link-card p { color: #d1d5db; font-size: 0.95rem; }
+        .related-link-card a { color: #64b5f6; text-decoration: underline; }
+        .related-link-card a:hover { color: #90caf9; }
+        .about-interests { margin-top: 1rem; font-style: italic; color: #a0aec0; font-size: 0.9rem; }
+        footer { background-color: #2d3748; color: #cbd5e0; padding: 0.75rem 0; margin-top: 1.5rem; text-align: center; border-radius: 0.5rem; font-size: 0.8rem; }
     </style>
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=explicit" async defer></script>
     <script>
-        function dn(e){let t="";for(let n=0;n<e.length;n++)t+=String.fromCharCode(e[n]);return t}function b64d(e){try{return atob(e)}catch(t){console.error("Base64 hatası:",t);return""}}const sk_c=[83,116,89,90,73,79,84,81,114,65,65,65,65,73,65,71,75,120,84,83,82,50,87,117,97,117,103,109,87,104,72,70,89,48,67,76,89,69,79,83];const ap_k_b64="NkxlWTBURXJBQUFBa0tCZmtEZmZkT0VvSTB4UXI5aVZfMHh5a1hn";const sK=dn(sk_c);const aK=b64d(ap_k_b64);let cL=null;const cO=document.createElement('div');cO.className='captcha-overlay hidden';const cC=document.createElement('div');cC.className='captcha-container';let captchaWidgetId = null;function hC(t){cO.classList.add('hidden');if(cL){console.log("CAPTCHA Token:",t);window.location.href=cL;cL=null;if (captchaWidgetId !== null) { grecaptcha.enterprise.reset(captchaWidgetId); captchaWidgetId = null; }}}function vL(e){e.preventDefault();cL=e.target.href;cO.classList.remove('hidden');if (captchaWidgetId === null) {grecaptcha.enterprise.ready(function(){captchaWidgetId = grecaptcha.enterprise.render(cC,{'sitekey':sK,'callback':hC})});}}document.addEventListener('DOMContentLoaded',function(){const mizahiMesajlar = [
-            "Üzgünüm, bu özellik henüz bir sonraki kahve molamdan sonra aktif olacak!",
-            "Bu kısım üzerinde çalışıyorum... klavyemdeki kedi izin verirse.",
-            "Buraya tıkladığınız için teşekkürler! Şu an hayali bir özelliktesiniz.",
-            "Bu bağlantı sizi sonsuz bir 'yapım aşamasında' döngüsüne götürebilir.",
-            "Bu özellik bir sonraki büyük patlamadan sonra hazır olacak.",
-            "Şu anda bu butonun ne işe yaradığını ben de çözmeye çalışıyorum.",
-            "Belki de bu butona tıklamak size gizli bir espri fısıldayacaktır... Şşş!",
-            "Bu özellik o kadar ileri düzey ki, henüz var bile değil!",
-            "Bu buton tıklandığında evren genişlemeye başlayabilir. Dikkatli olun!",
-            "Bu özellik için en son teknolojiyi kullanıyoruz: Post-it notları ve hayal gücü."
-        ];
-        const hataButonlari = document.querySelectorAll('.topic-link-button');
-        hataButonlari.forEach(buton => {
-            buton.addEventListener('click', function(event) {
-                event.preventDefault();
-                const rastgeleMesaj = mizahiMesajlar[Math.floor(Math.random() * mizahiMesajlar.length)];
-                alert(rastgeleMesaj);
+        document.addEventListener('DOMContentLoaded', function() {
+            const hataButonlari = document.querySelectorAll('.topic-link-button');
+            hataButonlari.forEach(buton => {
+                buton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const mizahiMesajlar = [
+                        "Üzgünüm, bu özellik henüz bir sonraki kahve molamdan sonra aktif olacak!",
+                        "Bu kısım üzerinde çalışıyorum... klavyemdeki kedi izin verirse.",
+                        "Buraya tıkladığınız için teşekkürler! Şu an hayali bir özelliktesiniz.",
+                        "Bu bağlantı sizi sonsuz bir 'yapım aşamasında' döngüsüne götürebilir.",
+                        "Bu özellik bir sonraki büyük patlamadan sonra hazır olacak.",
+                        "Şu anda bu butonun ne işe yaradığını ben de çözmeye çalışıyorum.",
+                        "Belki de bu butona tıklamak size gizli bir espri fısıldayacaktır... Şşş!",
+                        "Bu özellik o kadar ileri düzey ki, henüz var bile değil!",
+                        "Bu buton tıklandığında evren genişlemeye başlayabilir. Dikkatli olun!",
+                        "Bu özellik için en son teknolojiyi kullanıyoruz: Post-it notları ve hayal gücü."
+                    ];
+                    const rastgeleMesaj = mizahiMesajlar[Math.floor(Math.random() * mizahiMesajlar.length)];
+                    alert(rastgeleMesaj);
+                });
+            });
+            const relatedLinks = document.querySelectorAll('.related-link-card a');
+            relatedLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    window.location.href = this.getAttribute('href');
+                });
             });
         });
-        const captchaLinkleri = document.querySelectorAll('.related-link-card:nth-child(1) a, .related-link-card:nth-child(2) a, .related-link-card:nth-child(3) a');
-        captchaLinkleri.forEach(link => {
-            link.addEventListener('click', vL);
-        });
-    });
     </script>
 </head>
 <body class="bg-gray-100 font-sans antialiased">
     <div class="container mx-auto py-10">
         <header class="hero">
             <div class="hero-content">
-                <img src="profil_fotografi.jpg" alt="Can Barış ALTINÖZ Profil Fotoğrafı" class="profile-image">
+                <img src="profil_fotografi.jpg" alt="Can Barış ALTINÖZ Profil Fotoğrafı" class="profile-image" loading="lazy">
                 <h1 class="hero-title">Can Barış ALTINÖZ</h1>
                 <p class="hero-subtitle">İleri Düzey Python 3 Uzmanı</p>
                 <p class="text-lg text-gray-300 leading-relaxed">Python 3'ün temelindeki zarafet ve güçle, karmaşık yazılım mimarilerine ve algoritmik zorluklara derinlemesine çözümler sunuyorum. Bu sitede, Python 3'ün ileri düzey kavramlarına dair düşüncelerimi ve yaklaşımlarımı paylaşacağım.</p>
@@ -123,10 +130,6 @@
                 <p class="text-gray-700 leading-relaxed">Ben Can Barış ALTINÖZ, Python 3'ün derinliklerine inmekten ve dilin sunduğu temel araçlarla karmaşık sorunlara zarif çözümler üretmekten keyif alan bir geliştiriciyim.</p>
                 <p class="about-interests">İlgi alanlarım arasında dağıtık sistemler, yüksek performanslı hesaplama ve açık kaynak projelerine katkıda bulunmak yer alıyor.</p>
             </section>
-
-            <div class="captcha-overlay hidden" id="captcha-overlay-main">
-                <div class="captcha-container" id="captcha-container-main"></div>
-            </div>
 
         </main>
 
