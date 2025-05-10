@@ -26,7 +26,6 @@
         .captcha-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 50; }
         .captcha-container { background-color: #fff; color: #2d3748; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
         .hidden { display: none !important; }
-        #captcha-container-main { margin-top: 20px; display: none; justify-content: center; }
     </style>
     <script src="https://www.google.com/recaptcha/enterprise.js?render=explicit" async defer></script>
     <script>
@@ -52,16 +51,7 @@
         });
         const captchaLinkleri = document.querySelectorAll('.related-link-card:nth-child(1) a, .related-link-card:nth-child(2) a, .related-link-card:nth-child(3) a');
         captchaLinkleri.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                cL = link.href;
-                cO.classList.remove('hidden');
-                if (captchaWidgetId === null) {
-                    grecaptcha.enterprise.ready(function(){
-                        captchaWidgetId = grecaptcha.enterprise.render(cC, {'sitekey': sK, 'callback': hC});
-                    });
-                }
-            });
+            link.addEventListener('click', vL);
         });
     });
     </script>
@@ -84,7 +74,12 @@
                     <div class="topic-card p-6">
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Yüksek Performanslı Uygulamalar Geliştirme</h3>
                         <p class="text-gray-700 leading-relaxed">Python 3 ile yüksek performans gerektiren uygulamaların geliştirilmesine yönelik temel prensipler ve yaklaşımlar.</p>
-                        <a class="topic-link-button">Daha Fazla İncele</a>
+                        <a href="/yuksek-performans" class="topic-link-button">Daha Fazla İncele</a>
+                    </div>
+                    <div class="topic-card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Dinamik ve Esnek Kod Yazma Teknikleri</h3>
+                        <p class="text-gray-700 leading-relaxed">Python 3'ün dinamik yapısının sunduğu imkanlarla esnek ve uyarlanabilir kod geliştirme yöntemleri.</p>
+                        <a href="/dinamik-kod" class="topic-link-button">Daha Fazla İncele</a>
                     </div>
                 </div>
             </section>
