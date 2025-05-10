@@ -9,28 +9,30 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Daha yüksek kontrast için renk paleti ve temel stil optimizasyonları */
+        /* Yüksek kontrastlı ve okunabilir renk paleti */
         body { background-color: #1a202c; color: #f0f4f8; font-family: sans-serif; line-height: 1.6; margin: 0; }
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        .hero { background-color: #2d3748; color: #edf2f7; padding: 3rem 0; border-radius: 0.5rem; margin-bottom: 1.5rem; }
+        .hero { background-color: #4a5568; color: #edf2f7; padding: 3rem 0; border-radius: 0.5rem; margin-bottom: 1.5rem; }
         .hero-content { max-width: 768px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .hero-title { font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .hero-subtitle { font-size: 1rem; color: #a0aec0; margin-bottom: 1rem; }
-        .profile-image { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
-        .topic-card { background-color: #374151; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
-        .topic-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
-        .topic-link-button { display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #4a5568; color: #edf2f7; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.2s ease-in-out; cursor: pointer; font-size: 0.9rem; }
-        .topic-link-button:hover { background-color: #64748b; }
-        .solution-list { list-style-type: disc; padding-left: 1.2rem; color: #d1d5db; font-size: 0.95rem; }
+        .hero-title { font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem; color: #f7fafc; } /* Beyaz metin */
+        .hero-subtitle { font-size: 1rem; color: #cbd5e0; margin-bottom: 1rem; } /* Açık gri metin */
+        .profile-image { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); } /* Daha belirgin gölge */
+        .topic-card { background-color: #374151; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .topic-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4); }
+        .topic-link-button { display: inline-block; margin-top: 0.5rem; padding: 0.6rem 1.2rem; background-color: #64748b; color: #f7fafc; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.2s ease-in-out; cursor: pointer; font-size: 0.9rem; } /* Beyaz metin */
+        .topic-link-button:hover { background-color: #718096; }
+        .solution-list { list-style-type: disc; padding-left: 1.2rem; color: #e2e8f0; font-size: 0.95rem; } /* Daha açık gri metin */
         .solution-item { margin-bottom: 0.75rem; display: flex; align-items: flex-start; }
         .solution-item::before { content: "\2022"; color: #a0aec0; font-weight: bold; display: inline-block; width: 0.8em; margin-left: -0.8em; margin-right: 0.4rem; }
-        .related-link-card { background-color: #374151; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); padding: 1rem; margin-bottom: 1rem; }
-        .related-link-card h2 { color: #edf2f7; font-size: 1.5rem; margin-bottom: 0.75rem; }
-        .related-link-card p { color: #d1d5db; font-size: 0.95rem; }
-        .related-link-card a { color: #64b5f6; text-decoration: underline; }
-        .related-link-card a:hover { color: #90caf9; }
-        .about-interests { margin-top: 1rem; font-style: italic; color: #a0aec0; font-size: 0.9rem; }
-        footer { background-color: #2d3748; color: #cbd5e0; padding: 0.75rem 0; margin-top: 1.5rem; text-align: center; border-radius: 0.5rem; font-size: 0.8rem; }
+        .related-link-card { background-color: #374151; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); padding: 1rem; margin-bottom: 1rem; }
+        .related-link-card h2 { color: #edf2f7; font-size: 1.5rem; margin-bottom: 0.75rem; } /* Açık gri başlık */
+        .related-link-card p { color: #e2e8f0; font-size: 0.95rem; } /* Daha açık gri metin */
+        .related-link-card a { color: #90caf9; text-decoration: underline; } /* Daha canlı mavi link */
+        .related-link-card a:hover { color: #bbdefb; }
+        .about-interests { margin-top: 1rem; font-style: italic; color: #cbd5e0; font-size: 0.9rem; } /* Açık gri italik metin */
+        footer { background-color: #4a5568; color: #f0f4f8; padding: 0.75rem 0; margin-top: 1.5rem; text-align: center; border-radius: 0.5rem; font-size: 0.8rem; } /* Açık gri footer metni */
+        footer a { color: #90caf9; }
+        footer a:hover { color: #bbdefb; }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -38,18 +40,7 @@
             hataButonlari.forEach(buton => {
                 buton.addEventListener('click', function(event) {
                     event.preventDefault();
-                    const mizahiMesajlar = [
-                        "Üzgünüm, bu özellik henüz bir sonraki kahve molamdan sonra aktif olacak!",
-                        "Bu kısım üzerinde çalışıyorum... klavyemdeki kedi izin verirse.",
-                        "Buraya tıkladığınız için teşekkürler! Şu an hayali bir özelliktesiniz.",
-                        "Bu bağlantı sizi sonsuz bir 'yapım aşamasında' döngüsüne götürebilir.",
-                        "Bu özellik bir sonraki büyük patlamadan sonra hazır olacak.",
-                        "Şu anda bu butonun ne işe yaradığını ben de çözmeye çalışıyorum.",
-                        "Belki de bu butona tıklamak size gizli bir espri fısıldayacaktır... Şşş!",
-                        "Bu özellik o kadar ileri düzey ki, henüz var bile değil!",
-                        "Bu buton tıklandığında evren genişlemeye başlayabilir. Dikkatli olun!",
-                        "Bu özellik için en son teknolojiyi kullanıyoruz: Post-it notları ve hayal gücü."
-                    ];
+                    const mizahiMesajlar = [                        "Üzgünüm, bu özellik henüz bir sonraki kahve molamdan sonra aktif olacak!",                        "Bu kısım üzerinde çalışıyorum... klavyemdeki kedi izin verirse.",                        "Buraya tıkladığınız için teşekkürler! Şu an hayali bir özelliktesiniz.",                        "Bu bağlantı sizi sonsuz bir 'yapım aşamasında' döngüsüne götürebilir.",                        "Bu özellik bir sonraki büyük patlamadan sonra hazır olacak.",                        "Şu anda bu butonun ne işe yaradığını ben de çözmeye çalışıyorum.",                        "Belki de bu butona tıklamak size gizli bir espri fısıldayacaktır... Şşş!",                        "Bu özellik o kadar ileri düzey ki, henüz var bile değil!",                        "Bu buton tıklandığında evren genişlemeye başlayabilir. Dikkatli olun!",                        "Bu özellik için en son teknolojiyi kullanıyoruz: Post-it notları ve hayal gücü."                    ];
                     const rastgeleMesaj = mizahiMesajlar[Math.floor(Math.random() * mizahiMesajlar.length)];
                     alert(rastgeleMesaj);
                 });
@@ -96,16 +87,16 @@
                 <p class="text-gray-700 leading-relaxed">Python 3'ün temel gücünü kullanarak çeşitli ileri düzey yazılım sorunlarına nasıl yaklaştığıma dair genel prensipler ve düşünce süreçleri.</p>
                 <ul class="solution-list text-gray-700 leading-relaxed mt-4">
                     <li class="solution-item">
-                        <span class="font-semibold">Karmaşık sistemlerin analizi ve Python 3 ile modelleme stratejileri:</span> Sistem gereksinimlerini anlama ve Python'ın nesne yönelimli ve fonksiyonel programlama paradigmalarını kullanarak etkili modeller oluşturma.
+                        <span class="font-semibold" style="color: #e0f2f7;">Karmaşık sistemlerin analizi ve Python 3 ile modelleme stratejileri:</span> Sistem gereksinimlerini anlama ve Python'ın nesne yönelimli ve fonksiyonel programlama paradigmalarını kullanarak etkili modeller oluşturma.
                     </li>
                     <li class="solution-item">
-                        <span class="font-semibold">Ölçeklenebilir ve sürdürülebilir yazılım mimarileri tasarlama prensipleri:</span> Mikroservisler, olay güdümlü mimariler ve modüler tasarımlar gibi yaklaşımlarla uzun ömürlü ve kolay yönetilebilir sistemler geliştirme.
+                        <span class="font-semibold" style="color: #e0f2f7;">Ölçeklenebilir ve sürdürülebilir yazılım mimarileri tasarlama prensipleri:</span> Mikroservisler, olay güdümlü mimariler ve modüler tasarımlar gibi yaklaşımlarla uzun ömürlü ve kolay yönetilebilir sistemler geliştirme.
                     </li>
                     <li class="solution-item">
-                        <span class="font-semibold">Performans odaklı algoritmalar geliştirme ve Python 3'te uygulama teknikleri:</span> Verimli veri yapıları ve algoritmalar seçerek, Python'ın yerleşik araçlarını ve optimizasyon yöntemlerini kullanarak hızlı çalışan uygulamalar oluşturma.
+                        <span class="font-semibold" style="color: #e0f2f7;">Performans odaklı algoritmalar geliştirme ve Python 3'te uygulama teknikleri:</span> Verimli veri yapıları ve algoritmalar seçerek, Python'ın yerleşik araçlarını ve optimizasyon yöntemlerini kullanarak hızlı çalışan uygulamalar oluşturma.
                     </li>
                     <li class="solution-item">
-                        <span class="font-semibold">Test güdümlü geliştirme (TDD) prensipleri ve Python 3 ile uygulama yaklaşımları:</span> Yazılım geliştirme sürecinde testlerin önceliğini sağlama ve Python'ın test framework'lerini etkin bir şekilde kullanma.
+                        <span class="font-semibold" style="color: #e0f2f7;">Test güdümlü geliştirme (TDD) prensipleri ve Python 3 ile uygulama yaklaşımları:</span> Yazılım geliştirme sürecinde testlerin önceliğini sağlama ve Python'ın test framework'lerini etkin bir şekilde kullanma.
                     </li>
                 </ul>
             </section>
