@@ -9,31 +9,31 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Yüksek kontrastlı tema - Açık arka plan, çok koyu font */
-        body { background-color: #f9f9f9; color: #1a1a1a; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji; line-height: 1.6; margin: 0; }
+        /* Yüksek kontrastlı tema - Erişilebilirlik odaklı */
+        body { background-color: #f9f9f9; color: #333; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji; line-height: 1.6; margin: 0; }
         .container { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
         .hero { background-color: #e0e0e0; color: #222; padding: 3rem 0; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: center; }
         .hero-content { max-width: 80%; margin: 0 auto; }
         .hero-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; color: #000; }
-        .hero-subtitle { font-size: 1.1rem; color: #333; margin-bottom: 1.25rem; }
+        .hero-subtitle { font-size: 1.1rem; color: #444; margin-bottom: 1.25rem; }
         .profile-image { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.25rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); }
         .topic-card { background-color: #f0f0f0; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; padding: 1.5rem; margin-bottom: 1rem; }
         .topic-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
         .topic-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.75rem; color: #000; }
-        .topic-card p { color: #222; font-size: 0.95rem; line-height: 1.5; }
+        .topic-card p { color: #333; font-size: 0.95rem; line-height: 1.5; }
         .topic-link-button { display: inline-block; margin-top: 1rem; padding: 0.7rem 1.4rem; background-color: #444; color: #fff; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.2s ease-in-out; cursor: pointer; font-size: 0.9rem; }
         .topic-link-button:hover { background-color: #555; }
-        .solution-list { list-style-type: disc; padding-left: 1.5rem; color: #222; font-size: 0.95rem; }
+        .solution-list { list-style-type: disc; padding-left: 1.5rem; color: #333; font-size: 0.95rem; }
         .solution-item { margin-bottom: 0.75rem; display: flex; align-items: flex-start; }
-        .solution-item::before { content: "\2022"; color: #333; font-weight: bold; display: inline-block; width: 0.8em; margin-left: -0.8em; margin-right: 0.4rem; }
+        .solution-item::before { content: "\2022"; color: #444; font-weight: bold; display: inline-block; width: 0.8em; margin-left: -0.8em; margin-right: 0.4rem; }
         .related-link-card { background-color: #f0f0f0; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); padding: 1rem; margin-bottom: 1rem; }
         .related-link-card h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.75rem; color: #000; }
-        .related-link-card p { color: #222; font-size: 0.95rem; }
-        .related-link-card a { color: #007bff; text-decoration: underline; }
+        .related-link-card p { color: #333; font-size: 0.95rem; }
+        .related-link-card a { color: #007bff; text-decoration: underline; font-weight: 500; } /* Daha belirgin bağlantı */
         .related-link-card a:hover { color: #0056b3; }
-        .about-interests { margin-top: 1.5rem; font-style: italic; color: #333; font-size: 0.9rem; }
-        footer { background-color: #e0e0e0; color: #222; padding: 1rem 0; margin-top: 2rem; text-align: center; border-radius: 0.5rem; font-size: 0.85rem; }
-        footer a { color: #007bff; }
+        .about-interests { margin-top: 1.5rem; font-style: italic; color: #444; font-size: 0.9rem; }
+        footer { background-color: #e0e0e0; color: #333; padding: 1rem 0; margin-top: 2rem; text-align: center; border-radius: 0.5rem; font-size: 0.85rem; }
+        footer a { color: #007bff;  font-weight: 500;} /* Daha belirgin bağlantı */
         footer a:hover { color: #0056b3; }
     </style>
     <script>
@@ -60,11 +60,9 @@
                 });
             });
 
-            const relatedLinks = document.querySelectorAll('.related-link-card a');
+            const relatedLinks = document.querySelectorAll('.related-link-card a, footer a'); // Hem kartlardaki hem de footer'daki linkler
             relatedLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    window.location.href = this.getAttribute('href');
-                });
+                link.style.fontWeight = "500"; // Bağlantıları daha kalın yapar
             });
         });
     </script>
