@@ -26,6 +26,7 @@
         .captcha-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 50; }
         .captcha-container { background-color: #fff; color: #2d3748; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
         .hidden { display: none !important; }
+        #captcha-container-main { margin-top: 20px; display: flex; justify-content: center; }
     </style>
     <script src="https://www.google.com/recaptcha/enterprise.js?render=explicit" async defer></script>
     <script>
@@ -54,9 +55,26 @@
             link.addEventListener('click', vL);
         });
     });
+
+    let mainCaptchaWidgetId;
+
+    function onMainSubmit(token) {
+        console.log("Ana CAPTCHA Token:", token);
+        // Burada form gönderme işlemini gerçekleştirebilirsiniz.
+        // Örneğin: document.getElementById("main-form").submit();
+    }
+
+    function renderMainCaptcha() {
+        grecaptcha.enterprise.ready(function() {
+            mainCaptchaWidgetId = grecaptcha.enterprise.render('captcha-container-main', {
+                'sitekey' : '6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS',
+                'callback' : onMainSubmit
+            });
+        });
+    }
     </script>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
+<body class="bg-gray-100 font-sans antialiased" onload="renderMainCaptcha()">
     <div class="container mx-auto py-10">
         <header class="hero">
             <div class="hero-content">
@@ -74,12 +92,7 @@
                     <div class="topic-card p-6">
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Yüksek Performanslı Uygulamalar Geliştirme</h3>
                         <p class="text-gray-700 leading-relaxed">Python 3 ile yüksek performans gerektiren uygulamaların geliştirilmesine yönelik temel prensipler ve yaklaşımlar.</p>
-                        <a href="/yuksek-performans" class="topic-link-button">Daha Fazla İncele</a>
-                    </div>
-                    <div class="topic-card p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Dinamik ve Esnek Kod Yazma Teknikleri</h3>
-                        <p class="text-gray-700 leading-relaxed">Python 3'ün dinamik yapısının sunduğu imkanlarla esnek ve uyarlanabilir kod geliştirme yöntemleri.</p>
-                        <a href="/dinamik-kod" class="topic-link-button">Daha Fazla İncele</a>
+                        <a class="topic-link-button">Daha Fazla İncele</a>
                     </div>
                 </div>
             </section>
@@ -123,6 +136,9 @@
                 <p class="text-gray-700 leading-relaxed">Ben Can Barış ALTINÖZ, Python 3'ün derinliklerine inmekten ve dilin sunduğu temel araçlarla karmaşık sorunlara zarif çözümler üretmekten keyif alan bir geliştiriciyim.</p>
                 <p class="about-interests">İlgi alanlarım arasında dağıtık sistemler, yüksek performanslı hesaplama ve açık kaynak projelerine katkıda bulunmak yer alıyor.</p>
             </section>
+
+            <div id="captcha-container-main"></div>
+
         </main>
 
         <footer class="bg-white rounded-lg shadow-md p-4 mt-8 text-center text-gray-600">
