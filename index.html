@@ -9,142 +9,193 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        .hero { background-color: #2d3748; color: #f7fafc; padding: 4rem 0; border-radius: 0.5rem; margin-bottom: 2rem; }
-        .hero-content { max-width: 768px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .hero-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .hero-subtitle { font-size: 1.25rem; color: #cbd5e0; margin-bottom: 1rem; }
-        .profile-image { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); }
-        .topic-card { background-color: #fff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); transition: all 0.3s ease-in-out; }
-        .topic-card:hover { transform: translateY(-4px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        .topic-link-button { display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #64748b; color: #f7fafc; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.3s ease-in-out; cursor: pointer; }
-        .topic-link-button:hover { background-color: #4a5568; }
-        .solution-list { list-style-type: disc; padding-left: 1.5rem; }
-        .solution-item { margin-bottom: 0.75rem; display: flex; align-items: flex-start; }
-        .solution-item::before { margin-right: 0.5rem; }
-        .related-link-card { background-color: #fff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); padding: 1rem; margin-bottom: 1rem; }
-        .about-interests { margin-top: 1rem; font-style: italic; color: #718096; }
-        .captcha-container { display: flex; justify-content: center; margin-top: 2rem; }
+        body {
+            background-color: #1a202c; /* Daha koyu arka plan */
+            color: #f7fafc; /* Daha açık metin rengi */
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .hero {
+            background-color: #4a5568; /* Daha kontrastlı hero bölümü */
+            padding: 3rem 0;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #cbd5e0;
+            margin-bottom: 1rem;
+        }
+        .profile-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Daha belirgin gölge */
+        }
+        .topic-card {
+            background-color: #2d3748; /* Daha koyu kart arka planı */
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        .topic-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .topic-description {
+            color: #e0e6ed;
+            line-height: 1.5;
+        }
+        .topic-link {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.6rem 1.2rem;
+            background-color: #64748b;
+            color: #f7fafc;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .topic-link:hover {
+            background-color: #a0aec0;
+            color: #2d3748;
+        }
+        .related-link-card {
+            background-color: #2d3748;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        .related-link {
+            color: #81e6d9; /* Daha canlı link rengi */
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+        .related-link:hover {
+            color: #4fd1c5;
+        }
+        .about-interests {
+            margin-top: 1rem;
+            font-style: italic;
+            color: #a0aec0;
+        }
+        .captcha-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        .captcha-container {
+            background-color: #fff;
+            color: #2d3748;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS" async defer></script>
     <script>
-        function onSubmit(token) {
-            // Burada token ile yapılacak işlemler yer alacak (sunucuya gönderme vb.)
-            alert("CAPTCHA doğrulandı: " + token);
+        let currentLink = null;
+        const captchaOverlay = document.createElement('div');
+        captchaOverlay.className = 'captcha-overlay hidden';
+        const captchaContainer = document.createElement('div');
+        captchaContainer.className = 'captcha-container';
+        captchaContainer.innerHTML = '<div class="g-recaptcha" data-sitekey="6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS" data-callback="handleCaptcha"></div>';
+        captchaOverlay.appendChild(captchaContainer);
+        document.body.appendChild(captchaOverlay);
+
+        function handleCaptcha(token) {
+            captchaOverlay.classList.add('hidden');
+            if (currentLink) {
+                // Basitçe linke yönlendiriyoruz. Gerçek bir uygulamada sunucuya doğrulama isteği gönderilir.
+                window.location.href = currentLink;
+                currentLink = null;
+            }
         }
 
-        function onClick(element) {
+        function verifyLink(event) {
+            event.preventDefault();
+            currentLink = event.target.href;
+            captchaOverlay.classList.remove('hidden');
             grecaptcha.enterprise.ready(function() {
-                grecaptcha.enterprise.execute('6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS', {action: 'submit'}).then(function(token) {
-                    // CAPTCHA başarıyla çözüldüğünde token alınır
-                    onSubmit(token);
+                grecaptcha.enterprise.render(captchaContainer.querySelector('.g-recaptcha'), {
+                    'sitekey' : '6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS',
+                    'callback' : handleCaptcha
                 });
             });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const inceleButonlari = document.querySelectorAll('.topic-link-button');
-            inceleButonlari.forEach(buton => {
-                buton.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    alert('Bu butonlar henüz tamamlanmamıştır!');
-                });
+            const linksToProtect = document.querySelectorAll('.topic-link, .related-link');
+            linksToProtect.forEach(link => {
+                link.addEventListener('click', verifyLink);
             });
         });
     </script>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
-    <div class="container mx-auto py-10">
+<body>
+    <div class="container">
         <header class="hero">
-            <div class="hero-content">
-                <img src="profil_fotografi.jpg" alt="Can Barış ALTINÖZ Profil Fotoğrafı" class="profile-image">
-                <h1 class="hero-title">Can Barış ALTINÖZ</h1>
-                <p class="hero-subtitle">İleri Düzey Python 3 Uzmanı</p>
-                <p class="text-lg text-gray-300 leading-relaxed">Python 3'ün temelindeki zarafet ve güçle, karmaşık yazılım mimarilerine ve algoritmik zorluklara derinlemesine çözümler sunuyorum. Bu sitede, Python 3'ün ileri düzey kavramlarına dair düşüncelerimi ve yaklaşımlarımı paylaşacağım.</p>
-            </div>
+            <img src="profil_fotografi_hizli.jpg" alt="Can Barış ALTINÖZ Profil Fotoğrafı" class="profile-image">
+            <h1 class="hero-title">Can Barış ALTINÖZ</h1>
+            <p class="hero-subtitle">İleri Düzey Python 3 Uzmanı</p>
+            <p>Python 3'ün gücüyle karmaşık sorunlara çözümler.</p>
         </header>
 
-        <main class="bg-white rounded-lg shadow-md p-8">
-            <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">İleri Düzey Python 3 Yetenekleri</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="topic-card p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Yüksek Performanslı Uygulamalar Geliştirme</h3>
-                        <p class="text-gray-700 leading-relaxed">Python 3 ile yüksek performans gerektiren uygulamaların geliştirilmesine yönelik temel prensipler ve yaklaşımlar.</p>
-                        <a href="#" class="topic-link-button">Daha Fazla İncele</a>
-                    </div>
-                    <div class="topic-card p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Dinamik ve Esnek Kod Yazma Teknikleri</h3>
-                        <p class="text-gray-700 leading-relaxed">Python 3'ün dinamik yapısının sunduğu imkanlarla esnek ve uyarlanabilir kod geliştirme yöntemleri.</p>
-                        <a href="#" class="topic-link-button">Daha Fazla İncele</a>
-                    </div>
-                </div>
+        <main>
+            <section class="topic-card">
+                <h2 class="topic-title">Yüksek Performanslı Uygulamalar</h2>
+                <p class="topic-description">Python ile yüksek performanslı geliştirme prensipleri.</p>
+                <a href="/yuksek-performans" class="topic-link">İncele</a>
             </section>
 
-            <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Çözüm Yaklaşımlarım</h2>
-                <p class="text-gray-700 leading-relaxed">Python 3'ün temel gücünü kullanarak çeşitli ileri düzey yazılım sorunlarına nasıl yaklaştığıma dair genel prensipler ve düşünce süreçleri.</p>
-                <ul class="solution-list text-gray-700 leading-relaxed mt-4">
-                    <li class="solution-item">
-                        <span class="font-semibold">Karmaşık sistemlerin analizi ve Python 3 ile modelleme stratejileri:</span> Sistem gereksinimlerini anlama ve Python'ın nesne yönelimli ve fonksiyonel programlama paradigmalarını kullanarak etkili modeller oluşturma.
-                    </li>
-                    <li class="solution-item">
-                        <span class="font-semibold">Ölçeklenebilir ve sürdürülebilir yazılım mimarileri tasarlama prensipleri:</span> Mikroservisler, olay güdümlü mimariler ve modüler tasarımlar gibi yaklaşımlarla uzun ömürlü ve kolay yönetilebilir sistemler geliştirme.
-                    </li>
-                    <li class="solution-item">
-                        <span class="font-semibold">Performans odaklı algoritmalar geliştirme ve Python 3'te uygulama teknikleri:</span> Verimli veri yapıları ve algoritmalar seçerek, Python'ın yerleşik araçlarını ve optimizasyon yöntemlerini kullanarak hızlı çalışan uygulamalar oluşturma.
-                    </li>
-                    <li class="solution-item">
-                        <span class="font-semibold">Test güdümlü geliştirme (TDD) prensipleri ve Python 3 ile uygulama yaklaşımları:</span> Yazılım geliştirme sürecinde testlerin önceliğini sağlama ve Python'ın test framework'lerini etkin bir şekilde kullanma.
-                    </li>
-                </ul>
+            <section class="topic-card">
+                <h2 class="topic-title">Dinamik Kod Teknikleri</h2>
+                <p class="topic-description">Python'ın dinamik yapısıyla esnek kodlama yöntemleri.</p>
+                <a href="/dinamik-kod" class="topic-link">İncele</a>
             </section>
 
-            <section class="mb-8 related-link-card">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Yüzçıkaristik</h2>
-                <p class="text-gray-700 leading-relaxed"><a href="https://www.yuzcikaristik.com.tr/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Yüzçıkaristik</a></p>
-            </section>
-
-            <section class="mb-8 related-link-card">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Küçük Kardeşim</h2>
-                <p class="text-gray-700 leading-relaxed"><a href="/candas.html" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Blog</a></p>
-            </section>
-
-            <section class="mb-8 related-link-card">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Flappy Bird</h2>
-                <p class="text-gray-700 leading-relaxed"><a href="/Flappy" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Oyna</a></p>
-            </section>
-
-            <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">İletişim</h2>
-                <p class="text-gray-700 leading-relaxed">Benimle iletişime geçmek için aşağıdaki formu kullanabilirsiniz.</p>
-                <form class="mt-4">
-                    <div class="mb-4">
-                        <label for="ad" class="block text-gray-700 text-sm font-bold mb-2">Adınız:</label>
-                        <input type="text" id="ad" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
-                    <div class="mb-4">
-                        <label for="eposta" class="block text-gray-700 text-sm font-bold mb-2">E-posta Adresiniz:</label>
-                        <input type="email" id="eposta" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
-                    <div class="mb-4">
-                        <label for="mesaj" class="block text-gray-700 text-sm font-bold mb-2">Mesajınız:</label>
-                        <textarea id="mesaj" rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-                    </div>
-                    <div class="captcha-container">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="onClick(this)">Gönder</button>
-                    </div>
-                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-                </form>
+            <section class="related-link-card">
+                <h2>Diğer Bağlantılar</h2>
+                <p><a href="https://www.yuzcikaristik.com.tr/" target="_blank" rel="noopener noreferrer" class="related-link">Yüzçıkaristik</a></p>
+                <p><a href="/candas.html" target="_blank" rel="noopener noreferrer" class="related-link">Blog</a></p>
+                <p><a href="/Flappy" target="_blank" rel="noopener noreferrer" class="related-link">Flappy Bird Oyna</a></p>
             </section>
 
             <section>
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hakkımda</h2>
-                <p class="text-gray-700 leading-relaxed">Ben Can Barış ALTINÖZ, Python 3'ün derinliklerine inmekten ve dilin sunduğu temel araçlarla karmaşık sorunlara zarif çözümler üretmekten keyif alan bir geliştiriciyim.</p>
-                <p class="about-interests">İlgi alanlarım arasında dağıtık sistemler, yüksek performanslı hesaplama ve açık kaynak projelerine katkıda bulunmak yer alıyor.</p>
+                <h2>Hakkımda</h2>
+                <p>Python 3'e tutkun bir geliştirici.</p>
+                <p class="about-interests">Dağıtık sistemler, performans optimizasyonu, açık kaynak.</p>
             </section>
         </main>
 
-        <footer class="bg-white rounded-lg shadow-md p-4 mt-8 text-center text-gray-600">
+        <footer>
             <p>&copy; 2025 Can Barış ALTINÖZ.</p>
         </footer>
     </div>
