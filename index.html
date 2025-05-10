@@ -23,7 +23,34 @@
         .solution-item::before { margin-right: 0.5rem; }
         .related-link-card { background-color: #fff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); padding: 1rem; margin-bottom: 1rem; }
         .about-interests { margin-top: 1rem; font-style: italic; color: #718096; }
+        .captcha-container { display: flex; justify-content: center; margin-top: 2rem; }
     </style>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS"></script>
+    <script>
+        function onSubmit(token) {
+            // Burada token ile yapılacak işlemler yer alacak (sunucuya gönderme vb.)
+            alert("CAPTCHA doğrulandı: " + token);
+        }
+
+        function onClick(element) {
+            grecaptcha.enterprise.ready(function() {
+                grecaptcha.enterprise.execute('6LeY0TQrAAAAAIAGKxTSR2WuaugmWhHFY0CLYEOS', {action: 'submit'}).then(function(token) {
+                    // CAPTCHA başarıyla çözüldüğünde token alınır
+                    onSubmit(token);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const inceleButonlari = document.querySelectorAll('.topic-link-button');
+            inceleButonlari.forEach(buton => {
+                buton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    alert('Bu butonlar henüz tamamlanmamıştır!');
+                });
+            });
+        });
+    </script>
 </head>
 <body class="bg-gray-100 font-sans antialiased">
     <div class="container mx-auto py-10">
@@ -76,36 +103,50 @@
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Yüzçıkaristik</h2>
                 <p class="text-gray-700 leading-relaxed"><a href="https://www.yuzcikaristik.com.tr/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Yüzçıkaristik</a></p>
             </section>
-            
+
             <section class="mb-8 related-link-card">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Küçük Kardeşim</h2>
                 <p class="text-gray-700 leading-relaxed"><a href="/candas.html" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Blog</a></p>
             </section>
-            
+
             <section class="mb-8 related-link-card">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Flappy Bird</h2>
                 <p class="text-gray-700 leading-relaxed"><a href="/Flappy" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Oyna</a></p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">İletişim</h2>
+                <p class="text-gray-700 leading-relaxed">Benimle iletişime geçmek için aşağıdaki formu kullanabilirsiniz.</p>
+                <form class="mt-4">
+                    <div class="mb-4">
+                        <label for="ad" class="block text-gray-700 text-sm font-bold mb-2">Adınız:</label>
+                        <input type="text" id="ad" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label for="eposta" class="block text-gray-700 text-sm font-bold mb-2">E-posta Adresiniz:</label>
+                        <input type="email" id="eposta" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label for="mesaj" class="block text-gray-700 text-sm font-bold mb-2">Mesajınız:</label>
+                        <textarea id="mesaj" rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+                    <div class="captcha-container">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="onClick(this)">Gönder</button>
+                    </div>
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                </form>
             </section>
 
             <section>
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hakkımda</h2>
                 <p class="text-gray-700 leading-relaxed">Ben Can Barış ALTINÖZ, Python 3'ün derinliklerine inmekten ve dilin sunduğu temel araçlarla karmaşık sorunlara zarif çözümler üretmekten keyif alan bir geliştiriciyim.</p>
                 <p class="about-interests">İlgi alanlarım arasında dağıtık sistemler, yüksek performanslı hesaplama ve açık kaynak projelerine katkıda bulunmak yer alıyor.</p>
-                </section>
+            </section>
         </main>
 
         <footer class="bg-white rounded-lg shadow-md p-4 mt-8 text-center text-gray-600">
             <p>&copy; 2025 Can Barış ALTINÖZ.</p>
         </footer>
     </div>
-    <script>
-        const inceleButonlari = document.querySelectorAll('.topic-link-button');
-        inceleButonlari.forEach(buton => {
-            buton.addEventListener('click', function(event) {
-                event.preventDefault();
-                alert('Bu butonlar daha bitmemiştir!');
-            });
-        });
-    </script>
 </body>
 </html>
