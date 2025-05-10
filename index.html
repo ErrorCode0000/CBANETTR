@@ -9,32 +9,32 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Yüksek kontrastlı ve okunabilir renk paleti - GitHub Pages için optimize edildi */
-        body { background-color: #24292e; color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji; line-height: 1.6; margin: 0; }
+        /* Yüksek kontrastlı tema - Açık arka plan, çok koyu font */
+        body { background-color: #f9f9f9; color: #1a1a1a; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji; line-height: 1.6; margin: 0; }
         .container { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
-        .hero { background-color: #383d45; color: #f8f9fa; padding: 3rem 0; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: center; }
+        .hero { background-color: #e0e0e0; color: #222; padding: 3rem 0; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: center; }
         .hero-content { max-width: 80%; margin: 0 auto; }
-        .hero-title { font-size: 2.2rem; font-weight: 600; margin-bottom: 0.75rem; color: #fff; }
-        .hero-subtitle { font-size: 1.1rem; color: #d1d5da; margin-bottom: 1.25rem; }
-        .profile-image { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.25rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6); }
-        .topic-card { background-color: #444c56; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; padding: 1.5rem; margin-bottom: 1rem; }
-        .topic-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); }
-        .topic-card h3 { font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem; color: #fff; }
-        .topic-card p { color: #e0e2e5; font-size: 0.95rem; line-height: 1.5; }
-        .topic-link-button { display: inline-block; margin-top: 1rem; padding: 0.7rem 1.4rem; background-color: #586069; color: #fff; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.2s ease-in-out; cursor: pointer; font-size: 0.9rem; }
-        .topic-link-button:hover { background-color: #6a737d; }
-        .solution-list { list-style-type: disc; padding-left: 1.5rem; color: #e0e2e5; font-size: 0.95rem; }
+        .hero-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; color: #000; }
+        .hero-subtitle { font-size: 1.1rem; color: #333; margin-bottom: 1.25rem; }
+        .profile-image { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.25rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); }
+        .topic-card { background-color: #f0f0f0; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; padding: 1.5rem; margin-bottom: 1rem; }
+        .topic-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .topic-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.75rem; color: #000; }
+        .topic-card p { color: #222; font-size: 0.95rem; line-height: 1.5; }
+        .topic-link-button { display: inline-block; margin-top: 1rem; padding: 0.7rem 1.4rem; background-color: #444; color: #fff; border-radius: 0.25rem; text-decoration: none; transition: background-color 0.2s ease-in-out; cursor: pointer; font-size: 0.9rem; }
+        .topic-link-button:hover { background-color: #555; }
+        .solution-list { list-style-type: disc; padding-left: 1.5rem; color: #222; font-size: 0.95rem; }
         .solution-item { margin-bottom: 0.75rem; display: flex; align-items: flex-start; }
-        .solution-item::before { content: "\2022"; color: #c8ccd0; font-weight: bold; display: inline-block; width: 0.8em; margin-left: -0.8em; margin-right: 0.4rem; }
-        .related-link-card { background-color: #444c56; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); padding: 1rem; margin-bottom: 1rem; }
-        .related-link-card h2 { font-size: 1.3rem; font-weight: 500; margin-bottom: 0.75rem; color: #fff; }
-        .related-link-card p { color: #e0e2e5; font-size: 0.95rem; }
-        .related-link-card a { color: #58a6ff; text-decoration: underline; }
-        .related-link-card a:hover { color: #8ac6ff; }
-        .about-interests { margin-top: 1.5rem; font-style: italic; color: #c8ccd0; font-size: 0.9rem; }
-        footer { background-color: #383d45; color: #d1d5da; padding: 1rem 0; margin-top: 2rem; text-align: center; border-radius: 0.5rem; font-size: 0.85rem; }
-        footer a { color: #58a6ff; }
-        footer a:hover { color: #8ac6ff; }
+        .solution-item::before { content: "\2022"; color: #333; font-weight: bold; display: inline-block; width: 0.8em; margin-left: -0.8em; margin-right: 0.4rem; }
+        .related-link-card { background-color: #f0f0f0; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); padding: 1rem; margin-bottom: 1rem; }
+        .related-link-card h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.75rem; color: #000; }
+        .related-link-card p { color: #222; font-size: 0.95rem; }
+        .related-link-card a { color: #007bff; text-decoration: underline; }
+        .related-link-card a:hover { color: #0056b3; }
+        .about-interests { margin-top: 1.5rem; font-style: italic; color: #333; font-size: 0.9rem; }
+        footer { background-color: #e0e0e0; color: #222; padding: 1rem 0; margin-top: 2rem; text-align: center; border-radius: 0.5rem; font-size: 0.85rem; }
+        footer a { color: #007bff; }
+        footer a:hover { color: #0056b3; }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -76,7 +76,7 @@
                 <img src="profil_fotografi.jpg" alt="Can Barış ALTINÖZ Profil Fotoğrafı" class="profile-image" loading="lazy">
                 <h1 class="hero-title">Can Barış ALTINÖZ</h1>
                 <p class="hero-subtitle">İleri Düzey Python 3 Uzmanı</p>
-                <p class="text-lg text-gray-300 leading-relaxed">Python 3'ün temelindeki zarafet ve güçle, karmaşık yazılım mimarilerine ve algoritmik zorluklara derinlemesine çözümler sunuyorum. Bu sitede, Python 3'ün ileri düzey kavramlarına dair düşüncelerimi ve yaklaşımlarımı paylaşacağım.</p>
+                <p class="text-lg text-gray-700 leading-relaxed">Python 3'ün temelindeki zarafet ve güçle, karmaşık yazılım mimarilerine ve algoritmik zorluklara derinlemesine çözümler sunuyorum. Bu sitede, Python 3'ün ileri düzey kavramlarına dair düşüncelerimi ve yaklaşımlarımı paylaşacağım.</p>
             </div>
         </header>
 
@@ -101,10 +101,10 @@
                 <h2>Çözüm Yaklaşımlarım</h2>
                 <p>Python 3'ün temel gücünü kullanarak çeşitli ileri düzey yazılım sorunlarına nasıl yaklaştığıma dair genel prensipler ve düşünce süreçleri.</p>
                 <ul class="solution-list">
-                    <li class="solution-item"><span style="font-weight: bold; color: #fff;">Karmaşık sistemlerin analizi ve Python 3 ile modelleme stratejileri:</span> Sistem gereksinimlerini anlama ve Python'ın nesne yönelimli ve fonksiyonel programlama paradigmalarını kullanarak etkili modeller oluşturma.</li>
-                    <li class="solution-item"><span style="font-weight: bold; color: #fff;">Ölçeklenebilir ve sürdürülebilir yazılım mimarileri tasarlama prensipleri:</span> Mikroservisler, olay güdümlü mimariler ve modüler tasarımlar gibi yaklaşımlarla uzun ömürlü ve kolay yönetilebilir sistemler geliştirme.</li>
-                    <li class="solution-item"><span style="font-weight: bold; color: #fff;">Performans odaklı algoritmalar geliştirme ve Python 3'te uygulama teknikleri:</span> Verimli veri yapıları ve algoritmalar seçerek, Python'ın yerleşik araçlarını ve optimizasyon yöntemlerini kullanarak hızlı çalışan uygulamalar oluşturma.</li>
-                    <li class="solution-item"><span style="font-weight: bold; color: #fff;">Test güdümlü geliştirme (TDD) prensipleri ve Python 3 ile uygulama yaklaşımları:</span> Yazılım geliştirme sürecinde testlerin önceliğini sağlama ve Python'ın test framework'lerini etkin bir şekilde kullanma.</li>
+                    <li class="solution-item"><span style="font-weight: bold; color: #000;">Karmaşık sistemlerin analizi ve Python 3 ile modelleme stratejileri:</span> Sistem gereksinimlerini anlama ve Python'ın nesne yönelimli ve fonksiyonel programlama paradigmalarını kullanarak etkili modeller oluşturma.</li>
+                    <li class="solution-item"><span style="font-weight: bold; color: #000;">Ölçeklenebilir ve sürdürülebilir yazılım mimarileri tasarlama prensipleri:</span> Mikroservisler, olay güdümlü mimariler ve modüler tasarımlar gibi yaklaşımlarla uzun ömürlü ve kolay yönetilebilir sistemler geliştirme.</li>
+                    <li class="solution-item"><span style="font-weight: bold; color: #000;">Performans odaklı algoritmalar geliştirme ve Python 3'te uygulama teknikleri:</span> Verimli veri yapıları ve algoritmalar seçerek, Python'ın yerleşik araçlarını ve optimizasyon yöntemlerini kullanarak hızlı çalışan uygulamalar oluşturma.</li>
+                    <li class="solution-item"><span style="font-weight: bold; color: #000;">Test güdümlü geliştirme (TDD) prensipleri ve Python 3 ile uygulama yaklaşımları:</span> Yazılım geliştirme sürecinde testlerin önceliğini sağlama ve Python'ın test framework'lerini etkin bir şekilde kullanma.</li>
                 </ul>
             </section>
 
@@ -115,7 +115,7 @@
 
             <section class="mb-3 related-link-card">
                 <h2>Küçük Kardeşim</h2>
-                <p><a href="/Candas" target="_blank" rel="noopener noreferrer">Blog</a></p>
+                <p><a href="/candas.html" target="_blank" rel="noopener noreferrer">Blog</a></p>
             </section>
 
             <section class="mb-3 related-link-card">
@@ -125,7 +125,7 @@
 
             <section>
                 <h2>Hakkımda</h2>
-                <p>Ben Can Barış ALTINÖZ, Python 3'ün derinliklerine inmekten ve dilin sunduğu temel araçlarla karmaşık sorunlara zarif çözümler üretmekten keyif alan bir geliştiriciyim.</p>
+                <p class="text-gray-700 leading-relaxed">Ben Can Barış ALTINÖZ, Python 3'ün derinliklerine inmekten ve dilin sunduğu temel araçlarla karmaşık sorunlara zarif çözümler üretmekten keyif alan bir geliştiriciyim.</p>
                 <p class="about-interests">İlgi alanlarım arasında dağıtık sistemler, yüksek performanslı hesaplama ve açık kaynak projelerine katkıda bulunmak yer alıyor.</p>
             </section>
         </main>
