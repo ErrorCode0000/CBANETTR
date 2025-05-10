@@ -2,7 +2,8 @@ user-agent: *
 disallow: /CNAME
 disallow: /LICENSE
 allow: /index.html
-allow: /candas.html
+allow: /Candas/
+allow: /Candas/index.html
 allow: /profil_fotografi.jpg
 allow: /favicon.ico
 allow: /
