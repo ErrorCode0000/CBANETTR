@@ -11,3 +11,5 @@ allow: /robots.txt
 allow: /Flappy/
 allow: /Flappy/favicon.ico
 allow: /Flappy/index.html
+allow: /Apps/index.html
+allow: /Apps
