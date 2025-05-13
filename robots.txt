@@ -9,7 +9,11 @@ allow: /favicon.ico
 allow: /
 allow: /robots.txt
 allow: /Flappy/
-allow: /Flappy/favicon.ico
+allow: /Flappy/bird.ico
 allow: /Flappy/index.html
 allow: /Apps/index.html
-allow: /Apps
+allow: /Apps/
+allow: /Apps/redapp.png
+allow: /Apps/RedApp.py.zip
+allow: /Contact/index.html
+allow: /Contact/
