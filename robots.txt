@@ -17,3 +17,4 @@ allow: /Apps/redapp.png
 allow: /Apps/RedApp.py.zip
 allow: /Contact/index.html
 allow: /Contact/
+allow: /404.html
