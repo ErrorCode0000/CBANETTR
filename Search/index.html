@@ -3,30 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CBA Search</title>
+    <title>Google Özel Arama</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: sans-serif;
-            margin: 20px;
+            font-family: 'Permanent Marker', cursive; /* Font ailesini güncelledik */
+            margin: 40px;
+            background-color: #f4f4f4;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .search-container {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             width: 80%;
-            max-width: 600px;
+            max-width: 700px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .gcse-searchbox-only {
+            display: block;
+            width: 100%;
+        }
+
+        input.gsc-input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: calc(100% - 26px);
+            font-size: 18px; /* Font boyutunu biraz artırdık */
+            font-family: 'Permanent Marker', cursive; /* Font ailesini güncelledik */
+        }
+
+        button.gsc-search-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px; /* Font boyutunu biraz artırdık */
+            transition: background-color 0.3s ease;
+            font-family: 'Permanent Marker', cursive; /* Font ailesini güncelledik */
+        }
+
+        button.gsc-search-button:hover {
+            background-color: #0056b3;
         }
 
         .results-container {
             width: 80%;
-            max-width: 800px;
+            max-width: 900px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .gsc-results .gsc-webResult.gsc-result,
+        .gsc-results .gsc-imageResult.gsc-result {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .gsc-results .gsc-webResult.gsc-result:last-child,
+        .gsc-results .gsc-imageResult.gsc-result:last-child {
+            border-bottom: none;
+        }
+
+        .gsc-results .gs-title a {
+            color: #1a0dab;
+            text-decoration: none;
+            font-size: 20px; /* Font boyutunu biraz artırdık */
+            font-family: 'Permanent Marker', cursive; /* Font ailesini güncelledik */
+        }
+
+        .gsc-results .gs-title a:hover {
+            text-decoration: underline;
+        }
+
+        .gsc-results .gs-snippet {
+            color: #545454;
+            font-size: 16px; /* Font boyutunu biraz artırdık */
+            line-height: 1.5;
+            margin-top: 5px;
+            font-family: 'Permanent Marker', cursive; /* Font ailesini güncelledik */
+        }
+
+        .gsc-results .gs-visibleUrl {
+            color: #006621;
+            font-size: 14px;
+            font-family: 'Permanent Marker', cursive; /* Font ailesini güncelledik */
         }
     </style>
 </head>
 <body>
-
+    
     <div class="search-container">
         <gcse:searchbox></gcse:searchbox>
     </div>
