@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaybolduk! (404 - Etkileşimli)</title>
+    <title>404 - Uzay İstilası!</title>
     <style>
         body {
-            font-family: sans-serif;
-            background-color: #222; /* Daha uzay temalı bir arka plan */
+            font-family: monospace;
+            background-color: #000;
+            color: #0f0; /* Yeşil CRT ekran efekti */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             text-align: center;
-            color: #eee;
-            overflow: hidden; /* Oyun alanının dışına taşmayı engelle */
+            overflow: hidden;
         }
 
         .container {
@@ -24,13 +24,7 @@
         }
 
         h1 {
-            color: #ffcc00; /* Parlak sarı */
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: #ccc;
+            font-size: 2em;
             margin-bottom: 20px;
         }
 
@@ -38,95 +32,84 @@
             position: relative;
             width: 300px;
             height: 200px;
-            border: 2px dashed #555;
+            border: 2px solid #0f0;
             margin: 20px auto;
             overflow: hidden;
-            background: radial-gradient(circle, #333, #111); /* Derinlik 
-hissi */
-            cursor: pointer; /* Tıklanabilir olduğunu belirt */
         }
 
-        .ufo {
-            width: 60px;
-            height: 40px;
-            background-color: #00bfff; /* Canlı mavi */
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 5px 5px 0 0;
-            transition: left 0.3s ease-in-out; /* Yumuşak hareket */
-        }
-
-        .beam {
+        .player {
             width: 30px;
-            height: 0; /* Başlangıçta görünmez */
-            background-color: rgba(255, 255, 0, 0.8); /* Parlak sarı ışın 
-*/
+            height: 20px;
+            background-color: #0f0;
             position: absolute;
-            top: -5px; /* UFO'nun hemen üstünde başla */
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            transition: height 0.5s ease-out; /* Yumuşak ışın efekti */
+        }
+
+        .invader {
+            width: 20px;
+            height: 15px;
+            background-color: #f00; /* Kırmızı düşman */
+            position: absolute;
+            top: 20px;
+            left: 20px;
         }
 
         .message {
-            color: #98fb98; /* Açık yeşil */
-            font-weight: bold;
             margin-top: 20px;
+            font-weight: bold;
         }
 
         a {
-            color: #f08080; /* Açık kırmızı */
+            color: #0ff;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>404 - Uzayda Kaybolduk!</h1>
-        <p>Aradığınız sayfa bir uzay boşluğuna düşmüş gibi görünüyor. 
-Belki de UFO'lar tarafından kaçırılmıştır!</p>
+        <h1>404 - Sayfa İstilaya Uğradı!</h1>
+        <p>Aradığınız sayfa düşman uzay gemileri tarafından ele geçirilmiş olabilir.</p>
 
         <div class="game-area" id="gameArea">
-            <div class="ufo" id="ufo"></div>
-            <div class="beam" id="beam"></div>
+            <div class="player" id="player"></div>
+            <div class="invader" id="invader"></div>
         </div>
 
-        <p class="message" id="message">UFO'ya tıklayarak hareket 
-ettirmeye çalışın!</p>
-        <p><a href="/">Ana Sayfaya Dönüş</a></p>
+        <p class="message" id="message">Sayfayı kurtarmak için tıklayın!</p>
+        <p><a href="/">Ana Üsse Dönüş</a></p>
     </div>
 
     <script>
         const gameArea = document.getElementById('gameArea');
-        const ufo = document.getElementById('ufo');
-        const beam = document.getElementById('beam');
+        const player = document.getElementById('player');
+        const invader = document.getElementById('invader');
         const message = document.getElementById('message');
 
-        gameArea.addEventListener('click', (event) => {
-            const gameAreaRect = gameArea.getBoundingClientRect();
-            const clickX = event.clientX - gameAreaRect.left;
-            const ufoWidth = ufo.offsetWidth;
-            const newUfoLeft = Math.max(0, Math.min(gameAreaRect.width - 
-ufoWidth, clickX - ufoWidth / 2));
-
-            ufo.style.left = `${newUfoLeft}px`;
-            message.textContent = "Hareket ettiriyorsunuz!";
-
-            // Kısa bir gecikmeyle ışını aktif et
+        gameArea.addEventListener('click', () => {
+            message.textContent = " ateşlendi!";
+            // Basit bir animasyon ve mesaj değişikliği
+            invader.style.backgroundColor = '#0f0'; // Düşman vuruldu efekti
             setTimeout(() => {
-                beam.style.height = '220px'; // Oyun alanının biraz dışına 
-uzat
-                // Biraz daha gecikmeyle ana sayfaya yönlendir (veya başka 
-bir sayfaya)
+                message.textContent = "Sayfa belki de kurtarıldı... Ama emin değiliz!";
                 setTimeout(() => {
-                    window.location.href = "/"; // Ana sayfaya yönlendir
-                    // İsterseniz buraya rastgele bir sayfa yönlendirme 
-kodu ekleyebilirsiniz.
-                }, 1000);
-                message.textContent = "Işın sizi alıyor...";
-            }, 500);
+                    window.location.href = "/"; // Ana sayfaya geri dön
+                }, 1500);
+            }, 1000);
         });
+
+        // Basit bir düşman hareketi (sadece görsel, gerçek oyun değil)
+        let invaderDirection = 1; // 1 sağ, -1 sol
+        setInterval(() => {
+            let currentLeft = parseInt(window.getComputedStyle(invader).left);
+            let newLeft = currentLeft + 10 * invaderDirection;
+
+            if (newLeft > gameArea.offsetWidth - invader.offsetWidth || newLeft < 0) {
+                invaderDirection *= -1;
+            }
+
+            invader.style.left = `${newLeft}px`;
+        }, 300);
     </script>
 </body>
 </html>
