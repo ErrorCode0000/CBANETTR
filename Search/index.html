@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBA Search</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .results-container {
+            width: 80%;
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <gcse:searchbox></gcse:searchbox>
+    </div>
+
+    <div class="results-container">
+        <gcse:searchresults></gcse:searchresults>
+    </div>
+
+    <script async src="https://cse.google.com/cse.js?cx=c23308ce1b13b4f61"></script>
+
+</body>
+</html>
