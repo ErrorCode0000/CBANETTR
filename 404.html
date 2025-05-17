@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaybolduk! (404 - Etkileşimli)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #222; /* Daha uzay temalı bir arka plan */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+            color: #eee;
+            overflow: hidden; /* Oyun alanının dışına taşmayı engelle */
+        }
+
+        .container {
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #ffcc00; /* Parlak sarı */
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .game-area {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            border: 2px dashed #555;
+            margin: 20px auto;
+            overflow: hidden;
+            background: radial-gradient(circle, #333, #111); /* Derinlik 
+hissi */
+            cursor: pointer; /* Tıklanabilir olduğunu belirt */
+        }
+
+        .ufo {
+            width: 60px;
+            height: 40px;
+            background-color: #00bfff; /* Canlı mavi */
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px 5px 0 0;
+            transition: left 0.3s ease-in-out; /* Yumuşak hareket */
+        }
+
+        .beam {
+            width: 30px;
+            height: 0; /* Başlangıçta görünmez */
+            background-color: rgba(255, 255, 0, 0.8); /* Parlak sarı ışın 
+*/
+            position: absolute;
+            top: -5px; /* UFO'nun hemen üstünde başla */
+            left: 50%;
+            transform: translateX(-50%);
+            transition: height 0.5s ease-out; /* Yumuşak ışın efekti */
+        }
+
+        .message {
+            color: #98fb98; /* Açık yeşil */
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #f08080; /* Açık kırmızı */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404 - Uzayda Kaybolduk!</h1>
+        <p>Aradığınız sayfa bir uzay boşluğuna düşmüş gibi görünüyor. 
+Belki de UFO'lar tarafından kaçırılmıştır!</p>
+
+        <div class="game-area" id="gameArea">
+            <div class="ufo" id="ufo"></div>
+            <div class="beam" id="beam"></div>
+        </div>
+
+        <p class="message" id="message">UFO'ya tıklayarak hareket 
+ettirmeye çalışın!</p>
+        <p><a href="/">Ana Sayfaya Dönüş</a></p>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const ufo = document.getElementById('ufo');
+        const beam = document.getElementById('beam');
+        const message = document.getElementById('message');
+
+        gameArea.addEventListener('click', (event) => {
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            const clickX = event.clientX - gameAreaRect.left;
+            const ufoWidth = ufo.offsetWidth;
+            const newUfoLeft = Math.max(0, Math.min(gameAreaRect.width - 
+ufoWidth, clickX - ufoWidth / 2));
+
+            ufo.style.left = `${newUfoLeft}px`;
+            message.textContent = "Hareket ettiriyorsunuz!";
+
+            // Kısa bir gecikmeyle ışını aktif et
+            setTimeout(() => {
+                beam.style.height = '220px'; // Oyun alanının biraz dışına 
+uzat
+                // Biraz daha gecikmeyle ana sayfaya yönlendir (veya başka 
+bir sayfaya)
+                setTimeout(() => {
+                    window.location.href = "/"; // Ana sayfaya yönlendir
+                    // İsterseniz buraya rastgele bir sayfa yönlendirme 
+kodu ekleyebilirsiniz.
+                }, 1000);
+                message.textContent = "Işın sizi alıyor...";
+            }, 500);
+        });
+    </script>
+</body>
+</html>
