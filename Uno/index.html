@@ -3,55 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Can Barış ALTINÖZ - Python 3 ile İleri Düzey Geliştirme</title>
-    <meta name="description" content="Can Barış ALTINÖZ'ün Python 3 kullanarak ileri düzey yazılım geliştirme konularındaki günlüğü. Asenkron programlama, framework'ler, veri işleme ve optimizasyon teknikleri üzerine notlar.">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Uno (Tek PC - 2 Gizli Oyuncu)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 80%;
+            max-width: 960px;
+            margin-bottom: 20px;
+        }
+
+        #oyun-alani {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        #ustteki-kart-alani, #deste-alani {
+            text-align: center;
+        }
+
+        #ustteki-kart, #deste {
+            width: 80px;
+            height: 120px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #oyuncular {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .oyuncu {
+            text-align: center;
+        }
+
+        .el {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .kart {
+            width: 60px;
+            height: 90px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .kirmizi { background-color: #ff4d4d; color: white; }
+        .mavi { background-color: #4d88ff; color: white; }
+        .yesil { background-color: #5cb85c; color: white; }
+        .sari { background-color: #ffd866; }
+        .wild { background-color: black; color: white; font-size: 24px; }
+
+        #mesajlar {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        #kontrol-paneli {
+            text-align: center;
+        }
+
+        #cek-butonu {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .aktif-oyuncu {
+            font-weight: bold;
+            color: green;
+        }
+
+        .wild-secim-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .wild-secim-popup button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .wild-secim-popup .kirmizi { background-color: #ff4d4d; color: white; }
+        .wild-secim-popup .mavi { background-color: #4d88ff; color: white; }
+        .wild-secim-popup .yesil { background-color: #5cb85c; color: white; }
+        .wild-secim-popup .sari { background-color: #ffd866; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
-    <div class="container mx-auto py-10">
-        <header class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">Python 3 ile İleri Düzey Geliştirme: Can Barış ALTINÖZ</h1>
-            <p class="text-lg text-gray-600">Bu günlükte, Python 3'ün güçlü yönlerini kullanarak karmaşık yazılım geliştirme sorunlarına çözüm yaklaşımlarımı inceleyeceğim.</p>
-        </header>
+<body>
+    <div class="container">
+        <div id="oyun-alani">
+            <div id="ustteki-kart-alani">
+                <h2>Üstteki Kart</h2>
+                <div id="ustteki-kart"></div>
+            </div>
+            <div id="deste-alani">
+                <h2>Deste</h2>
+                <div id="deste"></div>
+            </div>
+        </div>
 
-        <main class="bg-white rounded-lg shadow-md p-8">
-            <article>
-                <header class="mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">İlk İnceleme: Python 3'te Asenkron Programlama ve `asyncio` Kütüphanesi</h2>
-                    <p class="text-sm text-gray-500">Yayın Tarihi: 19 Nisan 2025</p>
-                </header>
+        <div id="oyuncular">
+            <div id="oyuncu-1" class="oyuncu"></div>
+            <div id="oyuncu-2" class="oyuncu"></div>
+        </div>
 
-                <p class="text-gray-700 leading-relaxed mb-4">Merhaba, ben Can Barış ALTINÖZ. Bu günlükte, Python 3'ün sunduğu modern özelliklerden biri olan asenkron programlamaya ve bu alandaki güçlü kütüphanesi `asyncio`ya odaklanacağım. Özellikle I/O yoğun işlemler (ağ istekleri, dosya okuma/yazma vb.) sırasında performansı önemli ölçüde artırabilen asenkron yapılar, modern yazılım geliştirmenin vazgeçilmez bir parçası haline gelmiştir.</p>
+        <div id="mesajlar"></div>
 
-                <section class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Asenkron Programlamanın Temelleri ve Avantajları</h3>
-                    <p class="text-gray-700 leading-relaxed mb-4">Senkron programlamada işlemler sırayla yürütülürken, asenkron programlamada bir işlem başlatıldıktan sonra tamamlanması beklenmeden diğer işlemlere geçilebilir. İşlem tamamlandığında ise bir "callback" veya benzeri bir mekanizma ile sonuçlar elde edilir. Bu yaklaşım, özellikle birden fazla bekleyen işlem olduğunda kaynak kullanımını optimize eder ve uygulamanın genel yanıt verme hızını artırır. Python'daki `async` ve `await` anahtar kelimeleri, asenkron fonksiyonlar tanımlamayı ve asenkron işlemleri beklemeyi kolaylaştırır.</p>
-                    <p class="text-gray-700 leading-relaxed mt-2">Asenkron programlamanın Python 3'teki uygulamalarına dair daha detaylı örnekler ve açıklamalar için Python'ın resmi `asyncio` kütüphanesi dokümantasyonuna göz atabilirsiniz.</p>
-                </section>
+        <div id="kontrol-paneli">
+            <button id="cek-butonu">Kart Çek</button>
+        </div>
 
-                <section class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">2. `asyncio` ile Eş Zamanlılık Yönetimi</h3>
-                    <p class="text-gray-700 leading-relaxed mb-4">`asyncio`, asenkron görevleri yönetmek için çeşitli araçlar sunar. `asyncio.gather()` ile birden fazla asenkron görevi eş zamanlı olarak çalıştırabilir ve sonuçlarını toplayabilirsiniz. `asyncio.create_task()` ise bağımsız görevler oluşturmanızı sağlar. Ayrıca, paylaşılan kaynaklara erişimi kontrol etmek ve yarış durumlarını önlemek için `asyncio.Semaphore` ve `asyncio.Lock` gibi senkronizasyon primitifleri mevcuttur.</p>
-                    <p class="text-gray-700 leading-relaxed mt-2">`asyncio` ile eş zamanlılık yönetimi hakkında daha fazla bilgi için Nick Coghlan'ın "Asynchronous Programming in Python" makalesini inceleyebilirsiniz.</p>
-                </section>
-
-                <section class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Python 3'te İleri Düzey Veri İşleme Teknikleri</h3>
-                    <p class="text-gray-700 leading-relaxed mb-4">Python 3, veri bilimi ve mühendisliği alanlarında da güçlü araçlar sunar. `pandas` kütüphanesi ile büyük veri kümelerini etkili bir şekilde işleyebilir, `numpy` ile sayısal işlemleri optimize edebilir ve asenkron yaklaşımlarla bu işlemleri hızlandırabiliriz.</p>
-                    <p class="text-gray-700 leading-relaxed mt-2">Python'da ileri düzey veri işleme teknikleri hakkında daha fazla bilgi için "Python for Data Analysis" kitabını ve ilgili kütüphanelerin (pandas, numpy) dokümantasyonlarını inceleyebilirsiniz.</p>
-                </section>
-
-                <section>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Gelecek İncelemeler</h3>
-                    <p class="text-gray-700 leading-relaxed">Gelecek yazılarımda, Python 3 ile web geliştirme framework'leri (Django, FastAPI), gelişmiş veri analizi teknikleri ve performans optimizasyonu konularına değinmeyi planlıyorum.</p>
-                </section>
-
-            </article>
-        </main>
-
-        <footer class="bg-white rounded-lg shadow-md p-4 mt-8 text-center text-gray-600">
-            <p>&copy; 2025 Can Barış ALTINÖZ.</p>
-        </footer>
+        <div id="wild-secim" class="wild-secim-popup" style="display: none;">
+            <h3>Bir Renk Seçin</h3>
+            <button class="kirmizi" onclick="wildRenkSec('kirmizi')">Kırmızı</button>
+            <button class="mavi" onclick="wildRenkSec('mavi')">Mavi</button>
+            <button class="yesil" onclick="wildRenkSec('yesil')">Yeşil</button>
+            <button class="sari" onclick="wildRenkSec('sari')">Sarı</button>
+        </div>
     </div>
+
+    <script>
+        const usttekiKartAlani = document.getElementById('ustteki-kart');
+        const desteAlani = document.getElementById('deste');
+        const oyuncu1Div = document.getElementById('oyuncu-1');
+        const oyuncu2Div = document.getElementById('oyuncu-2');
+        const mesajlarDiv = document.getElementById('mesajlar');
+        const cekButonu = document.getElementById('cek-butonu');
+        const wildSecimPopup = document.getElementById('wild-secim');
+
+        let deste = [];
+        let oyuncuElleri = [[], []];
+        let usttekiKart = null;
+        let aktifOyuncu = 0;
+        let oyunYonu = 1;
+
+        function desteOlustur() {
+            deste = [];
+            const renkler = ["kirmizi", "mavi", "yesil", "sari"];
+            const sayilar = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+            const aksiyonlar = ["Çek2", "YönDeğiştir", "Pas"];
+            const wildlar = ["Wild", "WildÇek4"];
+
+            for (const renk of renkler) {
+                deste.push({ renk: renk, deger: "0" });
+                for (const sayi of sayilar.slice(1)) {
+                    deste.push({ renk: renk, deger: sayi });
+                    deste.push({ renk: renk, deger: sayi });
+                }
+                for (const aksiyon of aksiyonlar) {
+                    deste.push({ renk: renk, deger: aksiyon });
+                    deste.push({ renk: renk, deger: aksiyon });
+                }
+            }
+            for (const wild of wildlar) {
+                for (let i = 0; i < 4; i++) {
+                    deste.push({ renk: "wild", deger: wild });
+                }
+            }
+
+            for (let i = deste.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deste[i], deste[j]] = [deste[j], deste[i]];
+            }
+
+            return deste;
+        }
+
+        function kartCek(oyuncuIndex, adet = 1) {
+            for (let i = 0; i < adet; i++) {
+                if (deste.length > 0) {
+                    oyuncuElleri[oyuncuIndex].push(deste.pop());
+                } else {
+                    mesajGoster("Deste bitti!");
+                }
+            }
+            guncelleOyuncuElleri();
+        }
+
+        function kartOyna(oyuncuIndex, kartIndex) {
+            if (oyuncuIndex === aktifOyuncu && kartIndex >= 0 && kartIndex < oyuncuElleri[oyuncuIndex].length) {
+                const secilenKart = oyuncuElleri[oyuncuIndex][kartIndex];
+                if (gecerliHamle(secilenKart)) {
+                    const oynananKart = oyuncuElleri[oyuncuIndex].splice(kartIndex, 1)[0];
+                    usttekiKart = oynananKart;
+                    guncelleUsttekiKart();
+                    guncelleOyuncuElleri();
+                    mesajGoster(`Oyuncu ${aktifOyuncu + 1}, ${kartMetni(oynananKart)} oynadı.`);
+                    if (oyuncuElleri[aktifOyuncu].length === 0) {
+                        mesajGoster(`Oyuncu ${aktifOyuncu + 1} UNO! Oyunu kazandı!`);
+                        return;
+                    }
+                    if (oynananKart.renk === 'wild') {
+                        wildSecimPopup.style.display = 'block';
+                        // Wild kart seçimi wildRenkSec fonksiyonunda ele alınır.
+                    } else {
+                        ozelKartEfekti(oynananKart);
+                        if (oynananKart.deger !== "Çek2" && oynananKart.deger !== "WildÇek4" && oynananKart.deger !== "Pas") {
+                            sonrakiOyuncu();
+                        }
+                    }
+                } else {
+                    mesajGoster("Geçersiz hamle!");
+                }
+            } else if (oyuncuIndex !== aktifOyuncu) {
+                mesajGoster("Sıra sizde değil!");
+            }
+        }
+
+        function wildRenkSec(renk) {
+            if (usttekiKart && usttekiKart.renk === 'wild') {
+                usttekiKart.renk = renk;
+                guncelleUsttekiKart();
+                wildSecimPopup.style.display = 'none'; // Pop-up'ı gizle
+                ozelKartEfekti(usttekiKart);
+                if (usttekiKart.deger !== "Çek2" && usttekiKart.deger !== "WildÇek4" && usttekiKart.deger !== "Pas") {
+                    sonrakiOyuncu();
+                }
+            }
+        }
+
+        function gecerliHamle(kart) {
+            if (!usttekiKart) return true;
+            return kart.renk === 'wild' || usttekiKart.renk === 'wild' || kart.renk === usttekiKart.renk || kart.deger === usttekiKart.deger;
+        }
+
+        function ozelKartEfekti(kart) {
+            if (kart.deger === "Çek2") {
+                sonrakiOyuncu();
+                kartCek(aktifOyuncu, 2);
+                mesajGoster(`Oyuncu ${aktifOyuncu + 1}, 2 kart çekti.`);
+            } else if (kart.deger === "YönDeğiştir") {
+                oyunYonu *= -1;
+                mesajGoster("Oyunun yönü değişti.");
+                sonrakiOyuncu();
+            } else if (kart.deger === "Pas") {
+                mesajGoster(`Oyuncu ${aktifOyuncu + 1} pas geçti.`);
+                sonrakiOyuncu();
+            } else if (kart.deger === "WildÇek4") {
+                wildSecimPopup.style.display = 'block'; // Renk seçimi için popup göster
+                sonrakiOyuncu(); // Sıra atlar
+                kartCek(aktifOyuncu, 4);
+                mesajGoster(`Oyuncu ${aktifOyuncu + 1}, 4 kart çekti.`);
+            }
+            // Wild kart renk seçimi zaten kartOyna ve wildRenkSec fonksiyonlarında yapılıyor.
+        }
+
+        function kartMetni(kart) {
+            const renkAdlari = {
+                kirmizi: "kırmızı",
+                mavi: "mavi",
+                yesil: "yeşil",
+                sari: "sarı"
+            };
+            const degerAdlari = {
+                "0": "sıfır",
+                "1": "bir",
+                "2": "iki",
+                "3": "üç",
+                "4": "dört",
+                "5": "beş",
+                "6": "altı",
+                "7": "yedi",
+                "8": "sekiz",
+                "9": "dokuz",
+                "Çek2": "+2 Çek",
+                "YönDeğiştir": "Yön Değiştir",
+                "Pas": "Pas",
+                "Wild": "Wild",
+                "WildÇek4": "+4 Çek"
+            };
+
+            if (kart.renk === 'wild') {
+                return degerAdlari[kart.deger];
+            } else {
+                return `${degerAdlari[kart.deger]} ${renkAdlari[kart.renk]}`;
+            }
+        }
+
+        function guncelleUsttekiKart() {
+            usttekiKartAlani.className = '';
+            usttekiKartAlani.classList.add('kart');
+            if (usttekiKart) {
+                usttekiKartAlani.classList.add(usttekiKart.renk === 'wild' ? 'wild' : usttekiKart.renk);
+                usttekiKartAlani.textContent = kartMetni(usttekiKart);
+            } else {
+                usttekiKartAlani.textContent = '';
+            }
+        }
+
+        function guncelleOyuncuElleri() {
+            for (let i = 0; i < 2; i++) {
+                const oyuncuDiv = document.getElementById(`oyuncu-${i + 1}`);
+                oyuncuDiv.innerHTML = `<h3>Oyuncu ${i + 1} ${aktifOyuncu === i ? '<span class="aktif-oyuncu">(Sıra)</span>' : ''}</h3><div class="el"></div>`;
+                const elDiv = oyuncuDiv.querySelector('.el');
+                oyuncuElleri[i].forEach((kart, index) => {
+                    const kartDiv = document.createElement('div');
+                    kartDiv.classList.add('kart');
+                    if (i !== aktifOyuncu) {
+                        kartDiv.classList.add('gizli');
+                        kartDiv.textContent = 'UNO';
+                    } else {
+                        kartDiv.classList.add(kart.renk === 'wild' ? 'wild' : kart.renk);
+                        kartDiv.textContent = kartMetni(kart);
+                    }
+                    kartDiv.addEventListener('click', () => kartOyna(i, index));
+                    elDiv.appendChild(kartDiv);
+                });
+            }
+        }
+
+        function sonrakiOyuncu() {
+            aktifOyuncu = (aktifOyuncu + oyunYonu + 2) % 2;
+            guncelleOyuncuElleri();
+        }
+
+        function mesajGoster(mesaj) {
+            mesajlarDiv.textContent = mesaj;
+        }
+
+        cekButonu.addEventListener('click', () => {
+            kartCek(aktifOyuncu);
+            sonrakiOyuncu();
+        });
+
+        // Başlangıç işlemleri
+        deste = desteOlustur();
+        for (let i = 0; i < 7; i++) {
+            kartCek(0);
+            kartCek(1);
+        }
+        // İlk kart renksiz ise tekrar çek
+        while (deste.length > 0 && deste[deste.length - 1].renk === 'wild') {
+            deste = desteOlustur();
+            for (let i = 0; i < 7; i++) {
+                kartCek(0);
+                kartCek(1);
+            }
+        }
+        usttekiKart = deste.pop();
+        guncelleUsttekiKart();
+        guncelleOyuncuElleri();
+        mesajGoster('Oyun Başladı! Oyuncu 1 başlıyor.');
+    </script>
 </body>
 </html>
