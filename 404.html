@@ -3,113 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Uzay İstilası!</title>
+    <title>404 - Oyuncu Sayfa Bulunamadı</title>
     <style>
         body {
-            font-family: monospace;
-            background-color: #000;
-            color: #0f0; /* Yeşil CRT ekran efekti */
+            font-family: 'Arial', sans-serif;
+            background-color: #282c34; /* Koyu arka plan */
+            color: #f0f0f0; /* Açık metin */
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             text-align: center;
-            overflow: hidden;
+            overflow: hidden; /* Taşmayı engelle */
         }
 
         .container {
-            padding: 30px;
-            border-radius: 8px;
+            padding: 40px;
+            background-color: #3a3f47; /* Koyu gri kutu */
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            z-index: 1; /* Oyun elemanının altında kalmasını sağla */
         }
 
         h1 {
+            font-size: 6em;
+            margin-bottom: 0.2em;
+            color: #61dafb; /* Açık mavi */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            line-height: 1em;
+        }
+
+        h2 {
             font-size: 2em;
-            margin-bottom: 20px;
+            margin-top: 0;
+            color: #98c379; /* Yeşil tonu */
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6em;
+            margin-bottom: 25px;
         }
 
         .game-area {
-            position: relative;
             width: 300px;
-            height: 200px;
-            border: 2px solid #0f0;
-            margin: 20px auto;
+            height: 300px;
+            background-color: #21252b; /* Oyun alanı arka planı */
+            border: 5px solid #61dafb;
+            border-radius: 10px;
+            margin: 30px auto;
+            position: relative;
             overflow: hidden;
+            cursor: pointer;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        .player {
-            width: 30px;
-            height: 20px;
-            background-color: #0f0;
+        #target {
+            width: 40px;
+            height: 40px;
+            background-color: #ff6347; /* Hedefin rengi */
+            border-radius: 50%;
             position: absolute;
-            bottom: 10px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease-out; /* Hareket animasyonu */
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 99, 71, 0.7);
         }
 
-        .invader {
-            width: 20px;
-            height: 15px;
-            background-color: #f00; /* Kırmızı düşman */
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-
-        .message {
+        #message {
             margin-top: 20px;
+            font-size: 1.2em;
+            color: #ffcc00; /* Sarı mesaj */
             font-weight: bold;
         }
 
         a {
-            color: #0ff;
+            display: inline-block;
+            background-color: #e06c75; /* Kırmızımsı buton */
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+
+        a:hover {
+            background-color: #be505a;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 4em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .game-area {
+                width: 250px;
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 3em;
+            }
+            h2 {
+                font-size: 1.2em;
+            }
+            .game-area {
+                width: 200px;
+                height: 200px;
+            }
+            #target {
+                width: 30px;
+                height: 30px;
+            }
+            p, a {
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>404 - Sayfa İstilaya Uğradı!</h1>
-        <p>Aradığınız sayfa düşman uzay gemileri tarafından ele geçirilmiş olabilir.</p>
+        <h1>404</h1>
+        <h2>Kaybolmuş Sayfa Bulundu! (Şimdilik)</h2>
+        <p>Görünüşe göre aradığınız sayfa kaybolmuş. Ama endişelenmeyin, biraz eğlenelim!</p>
+        <p>Aşağıdaki **kırmızı topu bul ve tıkla** bakalım, sonra seni doğru yere götürelim!</p>
 
         <div class="game-area" id="gameArea">
-            <div class="player" id="player"></div>
-            <div class="invader" id="invader"></div>
+            <div id="target"></div>
         </div>
-
-        <p class="message" id="message">Sayfayı kurtarmak için tıklayın!</p>
-        <p><a href="/">Ana Üsse Dönüş</a></p>
+        <p id="message"></p>
+        <a href="/" id="homeButton" style="display: none;">Ana Sayfaya Dön</a>
     </div>
 
     <script>
+        const target = document.getElementById('target');
         const gameArea = document.getElementById('gameArea');
-        const player = document.getElementById('player');
-        const invader = document.getElementById('invader');
         const message = document.getElementById('message');
+        const homeButton = document.getElementById('homeButton');
+        let gameActive = true;
 
-        gameArea.addEventListener('click', () => {
-            message.textContent = " ateşlendi!";
-            // Basit bir animasyon ve mesaj değişikliği
-            invader.style.backgroundColor = '#0f0'; // Düşman vuruldu efekti
-            setTimeout(() => {
-                message.textContent = "Sayfa belki de kurtarıldı... Ama emin değiliz!";
-                setTimeout(() => {
-                    window.location.href = "/"; // Ana sayfaya geri dön
-                }, 1500);
-            }, 1000);
+        function moveTarget() {
+            if (!gameActive) return;
+            const maxX = gameArea.clientWidth - target.clientWidth;
+            const maxY = gameArea.clientHeight - target.clientHeight;
+
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+
+            target.style.left = `${newX}px`;
+            target.style.top = `${newY}px`;
+        }
+
+        let moveInterval = setInterval(moveTarget, 700); // Hedefin hareket hızı
+
+        target.addEventListener('click', () => {
+            if (gameActive) {
+                clearInterval(moveInterval); // Hareketi durdur
+                target.style.backgroundColor = '#4CAF50'; // Yeşil yap
+                target.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.9)';
+                message.textContent = 'Tebrikler! Sayfayı buldun! Şimdi ana sayfaya dönebilirsin.';
+                homeButton.style.display = 'inline-block'; // Butonu göster
+                gameActive = false; // Oyunu devre dışı bırak
+            }
         });
 
-        // Basit bir düşman hareketi (sadece görsel, gerçek oyun değil)
-        let invaderDirection = 1; // 1 sağ, -1 sol
-        setInterval(() => {
-            let currentLeft = parseInt(window.getComputedStyle(invader).left);
-            let newLeft = currentLeft + 10 * invaderDirection;
-
-            if (newLeft > gameArea.offsetWidth - invader.offsetWidth || newLeft < 0) {
-                invaderDirection *= -1;
-            }
-
-            invader.style.left = `${newLeft}px`;
-        }, 300);
+        // Sayfa ilk yüklendiğinde hedefi konumlandır
+        moveTarget();
     </script>
 </body>
 </html>
