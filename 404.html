@@ -13,10 +13,16 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            /* min-height: 100vh; */ /* Artık tam ekran yüksekliğine zorlamıyoruz */
+            padding: 20px; /* Kenarlardan biraz boşluk */
             margin: 0;
             text-align: center;
-            overflow: hidden; /* Taşmayı engelle */
+            /* overflow: hidden; */ /* Artık taşmayı engellemiyoruz */
+        }
+
+        html {
+            height: 100%; /* HTML öğesinin tam yüksekliği almasını sağlıyoruz */
+            overflow-y: auto; /* Dikey kaydırmayı her zaman etkinleştiriyoruz */
         }
 
         .container {
@@ -27,7 +33,14 @@
             max-width: 700px;
             width: 90%;
             position: relative;
-            z-index: 1; /* Oyun elemanının altında kalmasını sağla */
+            z-index: 1;
+            margin-top: auto; /* Üst ve alt boşlukları otomatik ayarla */
+            margin-bottom: auto;
+            min-height: 500px; /* İçeriğin en az bu kadar yükseklikte olmasını sağlar */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         h1 {
@@ -58,9 +71,10 @@
             border-radius: 10px;
             margin: 30px auto;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Oyun alanı içindeki taşmayı hala engelliyoruz */
             cursor: pointer;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0; /* Küçülmesini engeller */
         }
 
         #target {
