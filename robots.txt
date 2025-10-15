@@ -6,3 +6,5 @@ allow: /
 allow: /404.html
 allow: /robots.txt
 allow: /favicon.ico
+allow: /Tarla/index.html
+allow: /Tarla
