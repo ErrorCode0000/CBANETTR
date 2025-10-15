@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OP Mayın Tarlası</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #2b2b2b; /* Koyu tema */
+            color: #f0f0f0;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #00ffdd;
+            text-shadow: 0 0 5px #00ffdd;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 320px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        #reset-button {
+            padding: 5px 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: 1px solid #00ffdd;
+            border-radius: 5px;
+            background-color: #333;
+            color: #00ffdd;
+            transition: all 0.2s;
+        }
+        
+        #reset-button:hover {
+            background-color: #00ffdd;
+            color: #2b2b2b;
+            box-shadow: 0 0 10px #00ffdd;
+        }
+
+        #game-board {
+            display: grid;
+            border: 2px solid #555;
+            background-color: #1e1e1e;
+        }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #444;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #4f4f4f;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+        
+        .cell:hover {
+            background-color: #666;
+        }
+
+        .cell.revealed {
+            background-color: #3a3a3a;
+            border: 1px solid #222;
+        }
+
+        .cell.mine {
+            background-color: #ff4d4d;
+            box-shadow: 0 0 8px #ff4d4d;
+        }
+
+        /* GİZLİ HİLE İÇİN */
+        .cell.cheat-reveal {
+            background-color: #ffd700;
+        }
+
+        /* Sayı renkleri */
+        .c1 { color: #5294e2; }
+        .c2 { color: #4fe062; }
+        .c3 { color: #ff5555; }
+        .c4 { color: #d161ff; }
+        .c5 { color: #ff8c42; }
+        .c6 { color: #42fff2; }
+        .c7 { color: #ffffff; }
+        .c8 { color: #a0a0a0; }
+    </style>
+</head>
+<body>
+
+    <h1>OP Mayın Tarlası</h1>
+    <div class="game-info">
+        <div>Mayın Sayısı: <span id="mines-count">0</span></div>
+        <button id="reset-button">Yeniden Başlat</button>
+    </div>
+    <div id="game-board"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const boardElement = document.getElementById('game-board');
+            const minesCountElement = document.getElementById('mines-count');
+            const resetButton = document.getElementById('reset-button');
+
+            const BOARD_SIZE = 10;
+            const MINE_COUNT = 15;
+
+            let board = [];
+            let gameOver = false;
+            let flagsPlaced = 0;
+            let cheatActive = false;
+
+            function startGame() {
+                gameOver = false;
+                flagsPlaced = 0;
+                cheatActive = false;
+                minesCountElement.textContent = MINE_COUNT;
+                boardElement.innerHTML = '';
+                boardElement.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, 1fr)`;
+                createBoard();
+                renderBoard();
+            }
+
+            function createBoard() {
+                board = Array.from({ length: BOARD_SIZE }, () =>
+                    Array.from({ length: BOARD_SIZE }, () => ({
+                        isMine: false,
+                        isRevealed: false,
+                        isFlagged: false,
+                        adjacentMines: 0
+                    }))
+                );
+
+                let minesPlaced = 0;
+                while (minesPlaced < MINE_COUNT) {
+                    const row = Math.floor(Math.random() * BOARD_SIZE);
+                    const col = Math.floor(Math.random() * BOARD_SIZE);
+                    if (!board[row][col].isMine) {
+                        board[row][col].isMine = true;
+                        minesPlaced++;
+                    }
+                }
+
+                for (let r = 0; r < BOARD_SIZE; r++) {
+                    for (let c = 0; c < BOARD_SIZE; c++) {
+                        if (board[r][c].isMine) continue;
+                        let count = 0;
+                        for (let i = -1; i <= 1; i++) {
+                            for (let j = -1; j <= 1; j++) {
+                                const newR = r + i;
+                                const newC = c + j;
+                                if (newR >= 0 && newR < BOARD_SIZE && newC >= 0 && newC < BOARD_SIZE && board[newR][newC].isMine) {
+                                    count++;
+                                }
+                            }
+                        }
+                        board[r][c].adjacentMines = count;
+                    }
+                }
+            }
+
+            function renderBoard() {
+                for (let r = 0; r < BOARD_SIZE; r++) {
+                    for (let c = 0; c < BOARD_SIZE; c++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('cell');
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        cell.addEventListener('click', handleCellClick);
+                        cell.addEventListener('contextmenu', handleRightClick);
+                        boardElement.appendChild(cell);
+                    }
+                }
+            }
+
+            function handleCellClick(event) {
+                if (gameOver) return;
+                const cellElement = event.target;
+                const row = parseInt(cellElement.dataset.row);
+                const col = parseInt(cellElement.dataset.col);
+                const cellData = board[row][col];
+                if (cellData.isFlagged || cellData.isRevealed) return;
+                if (cellData.isMine) {
+                    endGame(false);
+                } else {
+                    revealCell(row, col);
+                    checkWin();
+                }
+            }
+
+            function handleRightClick(event) {
+                event.preventDefault();
+                if (gameOver) return;
+                const cellElement = event.target;
+                const row = parseInt(cellElement.dataset.row);
+                const col = parseInt(cellElement.dataset.col);
+                const cellData = board[row][col];
+                if (cellData.isRevealed) return;
+                cellData.isFlagged = !cellData.isFlagged;
+                if (cellData.isFlagged) {
+                    cellElement.textContent = '🚩';
+                    flagsPlaced++;
+                } else {
+                    cellElement.textContent = '';
+                    flagsPlaced--;
+                }
+                minesCountElement.textContent = MINE_COUNT - flagsPlaced;
+            }
+
+            function revealCell(r, c) {
+                if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) return;
+                const cellData = board[r][c];
+                if (cellData.isRevealed || cellData.isFlagged) return;
+                cellData.isRevealed = true;
+                const cellElement = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                cellElement.classList.add('revealed');
+                if (cellData.adjacentMines > 0) {
+                    cellElement.textContent = cellData.adjacentMines;
+                    cellElement.classList.add(`c${cellData.adjacentMines}`);
+                } else {
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            revealCell(r + i, c + j);
+                        }
+                    }
+                }
+            }
+
+            function checkWin() {
+                let revealedCount = 0;
+                board.forEach(row => row.forEach(cell => {
+                    if (cell.isRevealed) revealedCount++;
+                }));
+                if (revealedCount === (BOARD_SIZE * BOARD_SIZE) - MINE_COUNT) {
+                    endGame(true);
+                }
+            }
+
+            function endGame(isWin) {
+                gameOver = true;
+                if (cheatActive) toggleCheat();
+                board.forEach((row, r) => {
+                    row.forEach((cell, c) => {
+                        if (cell.isMine) {
+                            const cellElement = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                            cellElement.classList.add('mine');
+                            cellElement.textContent = '💣';
+                        }
+                    });
+                });
+                setTimeout(() => {
+                    if (isWin) {
+                        alert('Tebrikler, kazandın! 🎉');
+                    } else {
+                        alert('Mayına bastın! Oyun bitti. 😥');
+                    }
+                }, 200);
+            }
+
+            // --- GİZLİ VE OP HİLELER ---
+
+            function handleKeyPress(event) {
+                if (gameOver) return;
+                const key = event.key.toLowerCase();
+                
+                // Hile 1: Mayınların yerini göster/gizle
+                if (key === 'c') {
+                    toggleCheat();
+                }
+                
+                // Hile 2 (YENİ VE OP): Oyunu anında çöz
+                if (key === 'x') {
+                    solveGame();
+                }
+            }
+
+            function toggleCheat() {
+                cheatActive = !cheatActive;
+                board.forEach((row, r) => {
+                    row.forEach((cell, c) => {
+                        if (cell.isMine && !cell.isRevealed) {
+                            const cellElement = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                            cellElement.classList.toggle('cheat-reveal', cheatActive);
+                        }
+                    });
+                });
+            }
+            
+            function solveGame() {
+                board.forEach((row, r) => {
+                    row.forEach((cell, c) => {
+                        if (!cell.isMine) {
+                            revealCell(r, c);
+                        }
+                    });
+                });
+                checkWin(); // Oyunu kazanma kontrolünü tetikle
+            }
+
+            resetButton.addEventListener('click', startGame);
+            document.addEventListener('keydown', handleKeyPress);
+            startGame();
+        });
+    </script>
+
+</body>
+</html>
