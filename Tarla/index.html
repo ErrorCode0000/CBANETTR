@@ -15,48 +15,56 @@
             align-items: center;
             background-color: #2b2b2b; /* Koyu tema */
             color: #f0f0f0;
-            margin-top: 20px;
+            margin: 12px;
         }
 
         h1 {
             color: #00ffdd;
             text-shadow: 0 0 5px #00ffdd;
+            margin: 6px 0 12px 0;
         }
 
         .game-info {
             display: flex;
-            justify-content: space-between;
-            width: 320px;
-            margin-bottom: 15px;
-            font-size: 1.2em;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 1.05em;
         }
 
-        #reset-button {
-            padding: 5px 10px;
-            font-size: 1em;
+        #reset-button, #flag-mode-button {
+            padding: 6px 10px;
+            font-size: 0.95em;
             cursor: pointer;
             border: 1px solid #00ffdd;
-            border-radius: 5px;
+            border-radius: 6px;
             background-color: #333;
             color: #00ffdd;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
         
-        #reset-button:hover {
+        #reset-button:hover, #flag-mode-button:hover {
             background-color: #00ffdd;
             color: #2b2b2b;
             box-shadow: 0 0 10px #00ffdd;
+        }
+
+        #flag-mode-button.active {
+            background-color: #00ffdd;
+            color: #2b2b2b;
+            box-shadow: 0 0 8px #00ffdd;
         }
 
         #game-board {
             display: grid;
             border: 2px solid #555;
             background-color: #1e1e1e;
+            touch-action: manipulation; /* helps with mobile interactions */
         }
 
         .cell {
-            width: 30px;
-            height: 30px;
             border: 1px solid #444;
             display: flex;
             justify-content: center;
@@ -66,9 +74,15 @@
             cursor: pointer;
             background-color: #4f4f4f;
             user-select: none;
-            transition: background-color 0.2s;
+            transition: background-color 0.15s, transform 0.05s;
+            -webkit-user-select: none;
+            -ms-user-select: none;
         }
         
+        .cell:active {
+            transform: translateY(1px);
+        }
+
         .cell:hover {
             background-color: #666;
         }
@@ -76,6 +90,7 @@
         .cell.revealed {
             background-color: #3a3a3a;
             border: 1px solid #222;
+            cursor: default;
         }
 
         .cell.mine {
@@ -97,6 +112,23 @@
         .c6 { color: #42fff2; }
         .c7 { color: #ffffff; }
         .c8 { color: #a0a0a0; }
+
+        /* Responsive cell sizing */
+        @media (max-width: 480px) {
+            .cell { font-size: 1em; }
+        }
+
+        @media (max-width: 380px) {
+            .cell { font-size: 0.9em; }
+        }
+
+        /* Small helper text */
+        .hint {
+            font-size: 0.85em;
+            color: #bdbdbd;
+            text-align: center;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -104,15 +136,18 @@
     <h1>Mayın Tarlası</h1>
     <div class="game-info">
         <div>Mayın Sayısı: <span id="mines-count">0</span></div>
-        <button id="reset-button">Yeniden Başlat</button>
+        <button id="reset-button" aria-label="Yeniden Başlat">Yeniden Başlat</button>
+        <button id="flag-mode-button" aria-pressed="false" aria-label="Bayrak Modu">Bayrak Modu</button>
     </div>
-    <div id="game-board"></div>
+    <div id="game-board" role="grid" aria-label="Mayın tarlası"></div>
+    <div class="hint">Mobilde: uzun basma ile bayrak koyun. "Bayrak Modu" aktifken tek dokunuş bayrak koyar.</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const boardElement = document.getElementById('game-board');
             const minesCountElement = document.getElementById('mines-count');
             const resetButton = document.getElementById('reset-button');
+            const flagModeButton = document.getElementById('flag-mode-button');
 
             const BOARD_SIZE = 10;
             const MINE_COUNT = 15;
@@ -121,14 +156,32 @@
             let gameOver = false;
             let flagsPlaced = 0;
             let cheatActive = false;
+            let flagModeActive = false;
+
+            // For long press detection
+            const LONG_PRESS_MS = 600;
 
             function startGame() {
                 gameOver = false;
                 flagsPlaced = 0;
                 cheatActive = false;
+                flagModeActive = false;
+                flagModeButton.classList.remove('active');
+                flagModeButton.setAttribute('aria-pressed', 'false');
+
                 minesCountElement.textContent = MINE_COUNT;
                 boardElement.innerHTML = '';
-                boardElement.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, 1fr)`;
+
+                // compute cell size to fit on smaller screens
+                const maxWidth = Math.min(window.innerWidth - 24, 800);
+                const maxHeight = Math.min(window.innerHeight - 220, 800);
+                const sizeBasedOnWidth = Math.floor(maxWidth / BOARD_SIZE);
+                const sizeBasedOnHeight = Math.floor(maxHeight / BOARD_SIZE);
+                const cellSize = Math.max(24, Math.min(40, Math.min(sizeBasedOnWidth, sizeBasedOnHeight)));
+
+                boardElement.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, ${cellSize}px)`;
+                boardElement.style.gridAutoRows = `${cellSize}px`;
+
                 createBoard();
                 renderBoard();
             }
@@ -178,18 +231,87 @@
                         cell.classList.add('cell');
                         cell.dataset.row = r;
                         cell.dataset.col = c;
-                        cell.addEventListener('click', handleCellClick);
-                        cell.addEventListener('contextmenu', handleRightClick);
+                        cell.setAttribute('role', 'button');
+                        cell.setAttribute('aria-label', `Hücre ${r+1}-${c+1}`);
+                        attachCellEvents(cell);
                         boardElement.appendChild(cell);
                     }
                 }
             }
 
-            function handleCellClick(event) {
-                if (gameOver) return;
-                const cellElement = event.target;
-                const row = parseInt(cellElement.dataset.row);
-                const col = parseInt(cellElement.dataset.col);
+            function attachCellEvents(cellElement) {
+                let pointerDownTimeout = null;
+                let longPressTriggered = false;
+
+                // pointerdown captures mouse/touch/pen
+                cellElement.addEventListener('pointerdown', (event) => {
+                    if (gameOver) return;
+                    // Only start long-press for touch/pen; for mouse we rely on contextmenu (right click)
+                    if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+                        const row = parseInt(cellElement.dataset.row);
+                        const col = parseInt(cellElement.dataset.col);
+                        longPressTriggered = false;
+                        pointerDownTimeout = setTimeout(() => {
+                            // long press toggles flag
+                            toggleFlagAt(row, col);
+                            longPressTriggered = true;
+                        }, LONG_PRESS_MS);
+                    }
+                });
+
+                // pointerup handles click/release
+                cellElement.addEventListener('pointerup', (event) => {
+                    if (pointerDownTimeout) {
+                        clearTimeout(pointerDownTimeout);
+                        pointerDownTimeout = null;
+                    }
+                    if (gameOver) return;
+                    const row = parseInt(cellElement.dataset.row);
+                    const col = parseInt(cellElement.dataset.col);
+
+                    // If long press already triggered, don't also reveal
+                    if (longPressTriggered) {
+                        longPressTriggered = false;
+                        return;
+                    }
+
+                    // If flag mode active, toggle flag on tap
+                    if (flagModeActive) {
+                        toggleFlagAt(row, col);
+                        return;
+                    }
+
+                    // Left-click / tap => reveal
+                    // For mouse, ensure left button (button === 0)
+                    if (event.pointerType === 'mouse' && event.button !== 0) return;
+                    handleCellAction(row, col);
+                });
+
+                // cancel / leave should clear the timeout
+                cellElement.addEventListener('pointerleave', () => {
+                    if (pointerDownTimeout) {
+                        clearTimeout(pointerDownTimeout);
+                        pointerDownTimeout = null;
+                    }
+                });
+                cellElement.addEventListener('pointercancel', () => {
+                    if (pointerDownTimeout) {
+                        clearTimeout(pointerDownTimeout);
+                        pointerDownTimeout = null;
+                    }
+                });
+
+                // contextmenu (right click) still works on desktop to toggle flag
+                cellElement.addEventListener('contextmenu', (event) => {
+                    event.preventDefault();
+                    if (gameOver) return;
+                    const row = parseInt(cellElement.dataset.row);
+                    const col = parseInt(cellElement.dataset.col);
+                    toggleFlagAt(row, col);
+                });
+            }
+
+            function handleCellAction(row, col) {
                 const cellData = board[row][col];
                 if (cellData.isFlagged || cellData.isRevealed) return;
                 if (cellData.isMine) {
@@ -200,21 +322,17 @@
                 }
             }
 
-            function handleRightClick(event) {
-                event.preventDefault();
-                if (gameOver) return;
-                const cellElement = event.target;
-                const row = parseInt(cellElement.dataset.row);
-                const col = parseInt(cellElement.dataset.col);
+            function toggleFlagAt(row, col) {
                 const cellData = board[row][col];
                 if (cellData.isRevealed) return;
+                const cellElement = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
                 cellData.isFlagged = !cellData.isFlagged;
                 if (cellData.isFlagged) {
                     cellElement.textContent = '🚩';
                     flagsPlaced++;
                 } else {
                     cellElement.textContent = '';
-                    flagsPlaced--;
+                    flagsPlaced = Math.max(0, flagsPlaced - 1);
                 }
                 minesCountElement.textContent = MINE_COUNT - flagsPlaced;
             }
@@ -225,7 +343,9 @@
                 if (cellData.isRevealed || cellData.isFlagged) return;
                 cellData.isRevealed = true;
                 const cellElement = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                if (!cellElement) return;
                 cellElement.classList.add('revealed');
+                cellElement.textContent = '';
                 if (cellData.adjacentMines > 0) {
                     cellElement.textContent = cellData.adjacentMines;
                     cellElement.classList.add(`c${cellData.adjacentMines}`);
@@ -255,6 +375,7 @@
                     row.forEach((cell, c) => {
                         if (cell.isMine) {
                             const cellElement = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                            if (!cellElement) return;
                             cellElement.classList.add('mine');
                             cellElement.textContent = '💣';
                         }
@@ -292,7 +413,7 @@
                     row.forEach((cell, c) => {
                         if (cell.isMine && !cell.isRevealed) {
                             const cellElement = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
-                            cellElement.classList.toggle('cheat-reveal', cheatActive);
+                            if (cellElement) cellElement.classList.toggle('cheat-reveal', cheatActive);
                         }
                     });
                 });
@@ -309,8 +430,27 @@
                 checkWin(); // Oyunu kazanma kontrolünü tetikle
             }
 
-            resetButton.addEventListener('click', startGame);
+            // UI controls
+            resetButton.addEventListener('click', () => {
+                startGame();
+            });
+
+            flagModeButton.addEventListener('click', () => {
+                flagModeActive = !flagModeActive;
+                flagModeButton.classList.toggle('active', flagModeActive);
+                flagModeButton.setAttribute('aria-pressed', String(flagModeActive));
+            });
+
             document.addEventListener('keydown', handleKeyPress);
+
+            // Prevent default context menu on long press for mobile browsers that show it
+            window.addEventListener('contextmenu', (e) => {
+                // allow contextmenu only if it's not on a cell (we already handle cell contextmenu)
+                if (e.target && e.target.classList && e.target.classList.contains('cell')) {
+                    e.preventDefault();
+                }
+            });
+
             startGame();
         });
     </script>
