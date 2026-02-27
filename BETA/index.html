@@ -2,266 +2,251 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sınırsız Katlama Simülatörü</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Three.js Canvas Origami (Gerçek 3D)</title>
 <style>
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #2c3e50;
-    margin: 0;
-    font-family: sans-serif;
-    overflow: hidden;
-  }
-
-  .info-text {
-    color: #ecf0f1;
-    font-size: 16px;
-    margin-bottom: 20px;
-    text-align: center;
-    padding: 0 20px;
-  }
-
-  /* 3D Kamera ve Çalışma Alanı */
-  .scene {
-    perspective: 2000px;
-  }
-
-  /* Bu alan sadece olayları dinler ve kağıdı tutar */
-  #workspace {
-    position: relative;
-    width: 90vw;
-    max-width: 600px;
-    height: 60vw;
-    max-height: 400px;
-    cursor: crosshair;
-    background-color: rgba(0,0,0,0.2); /* Sadece çalışma alanının sınırlarını belli eden ince bir zemin */
-    touch-action: none;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-  }
-
-  /* Katlama Konteynerleri (İç içe geçerek çoklu katlamayı sağlar) */
-  .fold-wrapper, .fold-part {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    transform-style: preserve-3d;
-  }
-
-  /* Hareketli Parçanın Animasyonu */
-  .fold-part.rotating {
-    transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-    /* Katlandığında katmanlar arası derinlik hissi versin diye hafif gölge */
-    filter: drop-shadow(-2px 5px 10px rgba(0,0,0,0.3)); 
-  }
-
-  /* TAMAMEN OPAK KAĞIT TASARIMI */
-  .paper-content {
-    width: 100%;
-    height: 100%;
-    /* Şeffaflık kaldırıldı. Katı, sarımtırak bir kağıt rengi. */
-    background-color: #fdf5e6; 
-    border: 2px solid #bdc3c7; /* Çizgilerin belli olması için gri kenarlık */
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(30px, 6vw, 60px);
-    font-weight: bold;
-    color: #95a5a6; /* Tamamen opak yazı rengi */
-  }
-
-  /* Çizgi Çekerken Çıkan Kılavuz */
-  .draw-line {
-    position: absolute;
-    height: 3px;
-    background-color: #e74c3c;
-    transform-origin: 0 50%;
-    pointer-events: none;
-    z-index: 100;
-    display: none;
-    box-shadow: 0 0 8px #e74c3c;
-  }
-
-  /* Sıfırlama Butonu */
-  button {
-    margin-top: 30px;
-    padding: 12px 30px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: #3498db;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    transition: background-color 0.3s;
-  }
-
-  button:hover { background-color: #2980b9; }
+    body { margin: 0; overflow: hidden; background-color: #2c3e50; font-family: sans-serif; }
+    #info {
+        position: absolute; top: 10px; width: 100%; text-align: center; color: white;
+        pointer-events: none; /* Yazının tıklamayı engellememesi için */
+        text-shadow: 1px 1px 2px black;
+    }
+    #controls {
+        position: absolute; bottom: 20px; width: 100%; text-align: center;
+    }
+    button {
+        padding: 10px 25px; font-size: 16px; cursor: pointer; background: #e74c3c; color: white; border: none; border-radius: 5px;
+    }
 </style>
 </head>
 <body>
 
-  <div class="info-text">
-    👆 <b>İstediğin Kadar Katla:</b> Çizgi çek ve bırak!<br>
-    <span style="font-size: 14px; opacity: 0.8;">Her yeni çizgi, mevcut katlanmış şekli tekrar katlar.</span>
-  </div>
+<div id="info">
+    👆 <b>Canvas Modu:</b> Kağıdın üzerine çizgi çek ve bırak. <br>Gerçek 3D geometri, lag yok!
+</div>
 
-  <div class="scene">
-    <div id="workspace">
-      <div id="current-paper" class="fold-wrapper">
-        <div class="paper-content">ORIGAMI</div>
-      </div>
-      <div class="draw-line" id="line"></div>
-    </div>
-  </div>
+<div id="controls">
+    <button onclick="resetPaper()">Kağıdı Sıfırla</button>
+</div>
 
-  <button onclick="resetPaper()">Kağıdı Sıfırla (Aç)</button>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+</script>
 
-  <script>
-    const workspace = document.getElementById('workspace');
-    const line = document.getElementById('line');
+<script type="module">
+import * as THREE from 'three';
+
+let scene, camera, renderer;
+let paperMesh, lineHelper;
+let raycaster = new THREE.Raycaster();
+let pointer = new THREE.Vector2();
+let isDrawing = false;
+let startPoint = new THREE.Vector3();
+let endPoint = new THREE.Vector3();
+
+init();
+animate();
+
+function init() {
+    // 1. SAHNE KURULUMU
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x2c3e50);
+
+    // 2. KAMERA
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.set(0, 15, 20); // Yukarıdan ve çaprazdan bak
+    camera.lookAt(0, 0, 0);
+
+    // 3. IŞIKLAR (Gerçekçilik için önemli)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(10, 20, 10);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+
+    // 4. RENDERER (Canvas'ı oluşturan motor)
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    // 5. KAĞIDI OLUŞTUR
+    createPaper();
+
+    // 6. ÇİZİM YARDIMCISI ÇİZGİ
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 3 });
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
+    lineHelper = new THREE.Line(lineGeometry, lineMaterial);
+    lineHelper.visible = false;
+    scene.add(lineHelper);
+
+    // OLAY DİNLEYİCİLERİ
+    window.addEventListener('resize', onWindowResize);
+    renderer.domElement.addEventListener('pointerdown', onPointerDown);
+    renderer.domElement.addEventListener('pointermove', onPointerMove);
+    renderer.domElement.addEventListener('pointerup', onPointerUp);
+}
+
+function createPaper() {
+    if (paperMesh) scene.remove(paperMesh);
+
+    // Kağıt için bol segmentli bir düzlem (PlaneGeometry) oluşturuyoruz.
+    // Ne kadar çok segment (25, 25) o kadar pürüzsüz katlama, ama işlem yükü artar.
+    const geometry = new THREE.PlaneGeometry(16, 10, 30, 30);
     
-    let isDrawing = false;
-    let startX, startY;
+    // Kağıdın iki yüzü için malzeme. Arka yüzü farklı renk yapalım ki katlandığı belli olsun.
+    const materialFront = new THREE.MeshStandardMaterial({ 
+        color: 0xfdf5e6, // Krem rengi ön yüz
+        side: THREE.FrontSide,
+        roughness: 0.6,
+        metalness: 0.1
+    });
+     const materialBack = new THREE.MeshStandardMaterial({ 
+        color: 0xe67e22, // Turuncu arka yüz
+        side: THREE.BackSide,
+        roughness: 0.8
+    });
 
-    // Ortak Koordinat Alıcı (Fare ve Dokunmatik)
-    function getPointerPos(e) {
-      if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      if (e.changedTouches && e.changedTouches.length > 0) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
-      return { x: e.clientX, y: e.clientY };
+    // İki malzemeyi birleştirip mesh oluşturuyoruz
+    paperMesh = new THREE.Group();
+    const frontMesh = new THREE.Mesh(geometry, materialFront);
+    const backMesh = new THREE.Mesh(geometry.clone(), materialBack);
+    // Arka yüzü çok az geriye itiyoruz ki çakışmasınlar (Z-fighting önlemi 1)
+    backMesh.position.z = -0.001; 
+    
+    paperMesh.add(frontMesh);
+    paperMesh.add(backMesh);
+
+    paperMesh.rotation.x = -Math.PI / 2; // Kağıdı yere yatır
+    paperMesh.receiveShadow = true;
+    paperMesh.castShadow = true;
+    scene.add(paperMesh);
+}
+
+// --- ETKİLEŞİM FONKSİYONLARI ---
+
+function getIntersects(event) {
+    // Fare pozisyonunu -1 ile 1 arasına normalize et
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    // Kameradan fare ucuna ışın gönder (Raycasting)
+    raycaster.setFromCamera(pointer, camera);
+    // Işın kağıda değdi mi kontrol et
+    return raycaster.intersectObjects(paperMesh.children, true);
+}
+
+function onPointerDown(event) {
+    const intersects = getIntersects(event);
+    if (intersects.length > 0) {
+        isDrawing = true;
+        // Tıklanan noktayı dünya koordinatlarında al
+        startPoint.copy(intersects[0].point);
+        // Çizgi yardımcısını başlat
+        lineHelper.geometry.setFromPoints([startPoint, startPoint]);
+        lineHelper.visible = true;
     }
+}
 
-    // 1. Çizime Başla
-    function handleStart(e) {
-      e.preventDefault();
-      const pos = getPointerPos(e);
-      const rect = workspace.getBoundingClientRect();
-      startX = pos.x - rect.left;
-      startY = pos.y - rect.top;
-      isDrawing = true;
-      
-      line.style.display = 'block';
-      line.style.width = '0px';
-      line.style.left = startX + 'px';
-      line.style.top = startY + 'px';
+function onPointerMove(event) {
+    if (!isDrawing) return;
+    const intersects = getIntersects(event);
+    if (intersects.length > 0) {
+        const currentPoint = intersects[0].point;
+        // Çizgi yardımcısını güncelle
+        lineHelper.geometry.setFromPoints([startPoint, currentPoint]);
+        lineHelper.geometry.attributes.position.needsUpdate = true;
     }
+}
 
-    // 2. Çizgiyi Sürükle
-    function handleMove(e) {
-      if (!isDrawing) return;
-      e.preventDefault();
-      const pos = getPointerPos(e);
-      const rect = workspace.getBoundingClientRect();
-      let currentX = pos.x - rect.left;
-      let currentY = pos.y - rect.top;
-      
-      let dx = currentX - startX;
-      let dy = currentY - startY;
-      let length = Math.sqrt(dx*dx + dy*dy);
-      let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-      
-      line.style.width = length + 'px';
-      line.style.transform = `rotate(${angle}deg)`;
+function onPointerUp(event) {
+    if (!isDrawing) return;
+    isDrawing = false;
+    lineHelper.visible = false;
+
+    const intersects = getIntersects(event);
+    if (intersects.length > 0) {
+        endPoint.copy(intersects[0].point);
+        // Eğer çizgi çok kısaysa işlem yapma
+        if (startPoint.distanceTo(endPoint) < 0.5) return;
+        
+        // KATLAMA İŞLEMİNİ BAŞLAT
+        performFold(startPoint, endPoint);
     }
+}
 
-    // 3. Çoklu Katlama Mantığı (Recursive DOM)
-    function handleEnd(e) {
-      if (!isDrawing) return;
-      isDrawing = false;
-      line.style.display = 'none'; // Çizgiyi gizle
-      
-      const pos = getPointerPos(e);
-      const rect = workspace.getBoundingClientRect();
-      let endX = pos.x - rect.left;
-      let endY = pos.y - rect.top;
-      
-      let dx = endX - startX;
-      let dy = endY - startY;
-      let length = Math.sqrt(dx*dx + dy*dy);
-      
-      if (length < 20) return; // Yanlışlıkla tıklamaları engelle
+// --- CORE: KATLAMA MATEMATİĞİ ---
+function performFold(startWorld, endWorld) {
+    // Kağıt mesh'lerinin geometrilerine eriş
+    paperMesh.children.forEach(mesh => {
+        const geometry = mesh.geometry;
+        const positions = geometry.attributes.position.array;
+        
+        // 1. Dünya koordinatındaki noktaları kağıdın yerel (local) koordinatına çevir
+        const startLocal = mesh.worldToLocal(startWorld.clone());
+        const endLocal = mesh.worldToLocal(endWorld.clone());
 
-      // Vektör Hesaplamaları
-      let ux = dx / length;
-      let uy = dy / length;
-      let nx = -uy;
-      let ny = ux;
-      let K = 5000; // Ekranı bölecek kadar büyük bir çarpan
-      
-      let p1x = startX - ux * K; let p1y = startY - uy * K;
-      let p2x = startX + ux * K; let p2y = startY + uy * K;
-      
-      // Çizginin A ve B tarafları için poligon (maske) koordinatları
-      let c1x = p2x + nx * K; let c1y = p2y + ny * K;
-      let c2x = p1x + nx * K; let c2y = p1y + ny * K;
-      let clipA = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c1x}px ${c1y}px, ${c2x}px ${c2y}px)`;
-      
-      let c3x = p2x - nx * K; let c3y = p2y - ny * K;
-      let c4x = p1x - nx * K; let c4y = p1y - ny * K;
-      let clipB = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c3x}px ${c3y}px, ${c4x}px ${c4y}px)`;
+        // 2. Katlama vektörü ve normalini hesapla
+        const foldVector = new THREE.Vector3().subVectors(endLocal, startLocal).normalize();
+        // Kağıt düzleminde katlama çizgisine dik bir vektör (Z ekseni etrafında 90 derece dönüş)
+        const perpendicularVector = new THREE.Vector3(-foldVector.y, foldVector.x, 0).normalize();
+        
+        // 3. Döndürme Matrisi Hazırla (Katlama çizgisi ekseninde 180 derece)
+        // Z-fighting'i önlemek için tam 180 (Math.PI) değil, çok az eksiğini yapıyoruz.
+        const rotationAngle = Math.PI - 0.01; 
+        const rotationMatrix = new THREE.Matrix4().makeRotationAxis(foldVector, rotationAngle);
 
-      // --- İÇ İÇE GEÇEN YENİ DOM YAPISI OLUŞTURMA ---
-      const currentPaper = document.getElementById('current-paper');
-      
-      // Yeni bir sarmalayıcı oluştur
-      const newWrapper = document.createElement('div');
-      newWrapper.className = 'fold-wrapper';
-      newWrapper.id = 'current-paper'; // Artık yeni "ana kağıdımız" bu
-      
-      // Sabit kalacak parça (Çizginin A tarafı)
-      const stationaryPart = document.createElement('div');
-      stationaryPart.className = 'fold-part';
-      stationaryPart.style.clipPath = clipA;
-      // Mevcut kağıdın tam bir kopyasını alıp içine koy
-      stationaryPart.appendChild(currentPaper.cloneNode(true));
-      
-      // Katlanacak hareketli parça (Çizginin B tarafı)
-      const rotatingPart = document.createElement('div');
-      rotatingPart.className = 'fold-part rotating';
-      rotatingPart.style.clipPath = clipB;
-      rotatingPart.style.transformOrigin = `${startX}px ${startY}px`;
-      // Orijinal kağıdı bunun içine taşı
-      rotatingPart.appendChild(currentPaper);
-      
-      // Parçaları yeni sarmalayıcıya ekle
-      newWrapper.appendChild(stationaryPart);
-      newWrapper.appendChild(rotatingPart);
-      
-      // Eski kağıdın yerine yeni sarmalayıcıyı çalışma alanına ekle
-      workspace.appendChild(newWrapper);
+        // 4. Tüm köşeleri (vertex) gez
+        for (let i = 0; i < positions.length; i += 3) {
+            const vertex = new THREE.Vector3(positions[i], positions[i+1], positions[i+2]);
+            
+            // Köşenin katlama çizgisinin hangi tarafında olduğunu bul (Dot Product)
+            const vecToVertex = new THREE.Vector3().subVectors(vertex, startLocal);
+            const side = vecToVertex.dot(perpendicularVector);
 
-      // Animasyonu başlat (Hafif bir Z ekseni ekliyoruz ki kağıtlar üst üste binerken grafik hatası/z-fighting olmasın)
-      setTimeout(() => {
-        rotatingPart.style.transform = `rotate3d(${dx}, ${dy}, 0, 178deg) translateZ(1px)`;
-      }, 50);
-    }
+            // Eğer çizginin "aktif" tarafındaysa döndür
+            if (side > 0.001) {
+                // Dönüş merkezini orijine taşı
+                vertex.sub(startLocal);
+                // Döndür
+                vertex.applyMatrix4(rotationMatrix);
+                // Tekrar eski yerine taşı
+                vertex.add(startLocal);
 
-    // Sayfayı Başlangıç Haline Döndüren Fonksiyon
-    function resetPaper() {
-      const origHTML = `
-        <div id="current-paper" class="fold-wrapper">
-          <div class="paper-content">ORIGAMI</div>
-        </div>
-        <div class="draw-line" id="line"></div>
-      `;
-      workspace.innerHTML = origHTML;
-      // line elementini yeniden bağla
-      document.getElementById('line').style.display = 'none';
-    }
+                // Z-Fighting Önlemi 2: Katlanan kısmı kağıdın normali yönünde (Z ekseni) çok az yukarı kaldır.
+                // Bu sayede katlanan yüzey alttakinin içine girmez.
+                vertex.z += 0.02; 
 
-    // Olay Dinleyicileri (Hem dokunmatik hem fare)
-    workspace.addEventListener('mousedown', handleStart);
-    window.addEventListener('mousemove', handleMove);
-    window.addEventListener('mouseup', handleEnd);
+                // Yeni pozisyonları kaydet
+                positions[i] = vertex.x;
+                positions[i+1] = vertex.y;
+                positions[i+2] = vertex.z;
+            }
+        }
+        // Three.js'e geometrinin değiştiğini bildir
+        geometry.attributes.position.needsUpdate = true;
+        geometry.computeVertexNormals(); // Işıklandırmayı düzelt
+    });
+}
 
-    workspace.addEventListener('touchstart', handleStart, { passive: false });
-    window.addEventListener('touchmove', handleMove, { passive: false });
-    window.addEventListener('touchend', handleEnd);
-  </script>
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+
+// HTML'den erişilebilmesi için window nesnesine ekle
+window.resetPaper = createPaper;
+
+</script>
 </body>
 </html>
