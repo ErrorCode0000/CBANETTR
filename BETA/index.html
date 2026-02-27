@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Dokunmatik Destekli 3D Origami</title>
+<title>Sınırsız Katlama Simülatörü</title>
 <style>
   body {
     display: flex;
@@ -25,113 +25,121 @@
     padding: 0 20px;
   }
 
-  /* 3D Kamera Perspektifi */
+  /* 3D Kamera ve Çalışma Alanı */
   .scene {
-    perspective: 1500px;
+    perspective: 2000px;
   }
 
-  /* Ana Kağıt Alanı */
-  .paper-container {
+  /* Bu alan sadece olayları dinler ve kağıdı tutar */
+  #workspace {
     position: relative;
-    /* Mobilde daha iyi görünmesi için genişliği max-width ile sınırladık */
-    width: 90vw; 
+    width: 90vw;
     max-width: 600px;
     height: 60vw;
     max-height: 400px;
     cursor: crosshair;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    background-color: #bdc3c7;
-    
-    /* ÇOK ÖNEMLİ: Dokunmatik cihazlarda çizim yaparken sayfanın kaymasını engeller */
-    touch-action: none; 
+    background-color: rgba(0,0,0,0.2); /* Sadece çalışma alanının sınırlarını belli eden ince bir zemin */
+    touch-action: none;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
   }
 
-  /* Kağıdın İki Parçası */
-  .paper-layer {
+  /* Katlama Konteynerleri (İç içe geçerek çoklu katlamayı sağlar) */
+  .fold-wrapper, .fold-part {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, #3498db 0%, #9b59b6 100%);
-    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2));
-    background-size: 40px 40px;
+    transform-style: preserve-3d;
+  }
+
+  /* Hareketli Parçanın Animasyonu */
+  .fold-part.rotating {
+    transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* Katlandığında katmanlar arası derinlik hissi versin diye hafif gölge */
+    filter: drop-shadow(-2px 5px 10px rgba(0,0,0,0.3)); 
+  }
+
+  /* TAMAMEN OPAK KAĞIT TASARIMI */
+  .paper-content {
+    width: 100%;
+    height: 100%;
+    /* Şeffaflık kaldırıldı. Katı, sarımtırak bir kağıt rengi. */
+    background-color: #fdf5e6; 
+    border: 2px solid #bdc3c7; /* Çizgilerin belli olması için gri kenarlık */
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(40px, 8vw, 80px); /* Ekran boyutuna göre yazı büyüklüğü */
+    font-size: clamp(30px, 6vw, 60px);
     font-weight: bold;
-    color: rgba(255,255,255,0.3);
-    
-    transform-style: preserve-3d;
-    transition: transform 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+    color: #95a5a6; /* Tamamen opak yazı rengi */
   }
 
+  /* Çizgi Çekerken Çıkan Kılavuz */
   .draw-line {
     position: absolute;
     height: 3px;
-    background-color: #f1c40f;
+    background-color: #e74c3c;
     transform-origin: 0 50%;
     pointer-events: none;
-    z-index: 10;
+    z-index: 100;
     display: none;
-    box-shadow: 0 0 10px #f1c40f;
+    box-shadow: 0 0 8px #e74c3c;
   }
 
-  #part1 { z-index: 2; }
-  #part2 { z-index: 1; }
-
-  #part1.folded {
-    filter: drop-shadow(-5px 10px 15px rgba(0,0,0,0.4));
+  /* Sıfırlama Butonu */
+  button {
+    margin-top: 30px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #3498db;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
   }
+
+  button:hover { background-color: #2980b9; }
 </style>
 </head>
 <body>
 
   <div class="info-text">
-    👆 <b>Çiz ve Katla:</b> Ekranda bir çizgi çek ve bırak! <br>
-    <span style="font-size: 14px; opacity: 0.8;">Açmak için tekrar dokun.</span>
+    👆 <b>İstediğin Kadar Katla:</b> Çizgi çek ve bırak!<br>
+    <span style="font-size: 14px; opacity: 0.8;">Her yeni çizgi, mevcut katlanmış şekli tekrar katlar.</span>
   </div>
 
   <div class="scene">
-    <div class="paper-container" id="paper">
-      <div class="paper-layer" id="part2">KATLA</div>
-      <div class="paper-layer" id="part1">KATLA</div>
+    <div id="workspace">
+      <div id="current-paper" class="fold-wrapper">
+        <div class="paper-content">ORIGAMI</div>
+      </div>
       <div class="draw-line" id="line"></div>
     </div>
   </div>
 
+  <button onclick="resetPaper()">Kağıdı Sıfırla (Aç)</button>
+
   <script>
-    const paper = document.getElementById('paper');
-    const part1 = document.getElementById('part1');
-    const part2 = document.getElementById('part2');
+    const workspace = document.getElementById('workspace');
     const line = document.getElementById('line');
     
     let isDrawing = false;
-    let isFolded = false;
     let startX, startY;
 
-    // Fare ve Dokunmatik koordinatlarını ortak bir formatta alan yardımcı fonksiyon
+    // Ortak Koordinat Alıcı (Fare ve Dokunmatik)
     function getPointerPos(e) {
-      if (e.touches && e.touches.length > 0) {
-        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      } else if (e.changedTouches && e.changedTouches.length > 0) {
-        return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
-      }
+      if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      if (e.changedTouches && e.changedTouches.length > 0) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
       return { x: e.clientX, y: e.clientY };
     }
 
-    // Çizime Başlama (Hem mousedown hem touchstart için ortak)
+    // 1. Çizime Başla
     function handleStart(e) {
-      if (isFolded) {
-        part1.style.transform = 'none';
-        part1.style.clipPath = 'none';
-        part2.style.clipPath = 'none';
-        part1.classList.remove('folded');
-        line.style.display = 'none';
-        isFolded = false;
-        return;
-      }
-
+      e.preventDefault();
       const pos = getPointerPos(e);
-      const rect = paper.getBoundingClientRect();
+      const rect = workspace.getBoundingClientRect();
       startX = pos.x - rect.left;
       startY = pos.y - rect.top;
       isDrawing = true;
@@ -142,13 +150,12 @@
       line.style.top = startY + 'px';
     }
 
-    // Çizgiyi Sürükleme (Hem mousemove hem touchmove için ortak)
+    // 2. Çizgiyi Sürükle
     function handleMove(e) {
       if (!isDrawing) return;
-      e.preventDefault(); // Dokunmatik ekranlarda kaydırmayı engeller
-
+      e.preventDefault();
       const pos = getPointerPos(e);
-      const rect = paper.getBoundingClientRect();
+      const rect = workspace.getBoundingClientRect();
       let currentX = pos.x - rect.left;
       let currentY = pos.y - rect.top;
       
@@ -161,13 +168,14 @@
       line.style.transform = `rotate(${angle}deg)`;
     }
 
-    // Çizimi Bitirme ve Katlama (Hem mouseup hem touchend için ortak)
+    // 3. Çoklu Katlama Mantığı (Recursive DOM)
     function handleEnd(e) {
       if (!isDrawing) return;
       isDrawing = false;
+      line.style.display = 'none'; // Çizgiyi gizle
       
       const pos = getPointerPos(e);
-      const rect = paper.getBoundingClientRect();
+      const rect = workspace.getBoundingClientRect();
       let endX = pos.x - rect.left;
       let endY = pos.y - rect.top;
       
@@ -175,45 +183,82 @@
       let dy = endY - startY;
       let length = Math.sqrt(dx*dx + dy*dy);
       
-      if (length < 20) { 
-        line.style.display = 'none';
-        return; 
-      }
+      if (length < 20) return; // Yanlışlıkla tıklamaları engelle
 
+      // Vektör Hesaplamaları
       let ux = dx / length;
       let uy = dy / length;
       let nx = -uy;
       let ny = ux;
-      
-      let K = 5000; 
+      let K = 5000; // Ekranı bölecek kadar büyük bir çarpan
       
       let p1x = startX - ux * K; let p1y = startY - uy * K;
       let p2x = startX + ux * K; let p2y = startY + uy * K;
       
+      // Çizginin A ve B tarafları için poligon (maske) koordinatları
       let c1x = p2x + nx * K; let c1y = p2y + ny * K;
       let c2x = p1x + nx * K; let c2y = p1y + ny * K;
-      part1.style.clipPath = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c1x}px ${c1y}px, ${c2x}px ${c2y}px)`;
+      let clipA = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c1x}px ${c1y}px, ${c2x}px ${c2y}px)`;
       
       let c3x = p2x - nx * K; let c3y = p2y - ny * K;
       let c4x = p1x - nx * K; let c4y = p1y - ny * K;
-      part2.style.clipPath = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c3x}px ${c3y}px, ${c4x}px ${c4y}px)`;
+      let clipB = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c3x}px ${c3y}px, ${c4x}px ${c4y}px)`;
+
+      // --- İÇ İÇE GEÇEN YENİ DOM YAPISI OLUŞTURMA ---
+      const currentPaper = document.getElementById('current-paper');
       
-      part1.style.transformOrigin = `${startX}px ${startY}px`;
+      // Yeni bir sarmalayıcı oluştur
+      const newWrapper = document.createElement('div');
+      newWrapper.className = 'fold-wrapper';
+      newWrapper.id = 'current-paper'; // Artık yeni "ana kağıdımız" bu
       
+      // Sabit kalacak parça (Çizginin A tarafı)
+      const stationaryPart = document.createElement('div');
+      stationaryPart.className = 'fold-part';
+      stationaryPart.style.clipPath = clipA;
+      // Mevcut kağıdın tam bir kopyasını alıp içine koy
+      stationaryPart.appendChild(currentPaper.cloneNode(true));
+      
+      // Katlanacak hareketli parça (Çizginin B tarafı)
+      const rotatingPart = document.createElement('div');
+      rotatingPart.className = 'fold-part rotating';
+      rotatingPart.style.clipPath = clipB;
+      rotatingPart.style.transformOrigin = `${startX}px ${startY}px`;
+      // Orijinal kağıdı bunun içine taşı
+      rotatingPart.appendChild(currentPaper);
+      
+      // Parçaları yeni sarmalayıcıya ekle
+      newWrapper.appendChild(stationaryPart);
+      newWrapper.appendChild(rotatingPart);
+      
+      // Eski kağıdın yerine yeni sarmalayıcıyı çalışma alanına ekle
+      workspace.appendChild(newWrapper);
+
+      // Animasyonu başlat (Hafif bir Z ekseni ekliyoruz ki kağıtlar üst üste binerken grafik hatası/z-fighting olmasın)
       setTimeout(() => {
-        part1.style.transform = `rotate3d(${dx}, ${dy}, 0, 179deg)`;
-        part1.classList.add('folded');
-        isFolded = true;
+        rotatingPart.style.transform = `rotate3d(${dx}, ${dy}, 0, 178deg) translateZ(1px)`;
       }, 50);
     }
 
-    // Fare Etkinlikleri
-    paper.addEventListener('mousedown', handleStart);
-    window.addEventListener('mousemove', handleMove); // Window'a bağladık ki hızlı çizimlerde kağıttan çıkılsa bile çizgi takip etsin
+    // Sayfayı Başlangıç Haline Döndüren Fonksiyon
+    function resetPaper() {
+      const origHTML = `
+        <div id="current-paper" class="fold-wrapper">
+          <div class="paper-content">ORIGAMI</div>
+        </div>
+        <div class="draw-line" id="line"></div>
+      `;
+      workspace.innerHTML = origHTML;
+      // line elementini yeniden bağla
+      document.getElementById('line').style.display = 'none';
+    }
+
+    // Olay Dinleyicileri (Hem dokunmatik hem fare)
+    workspace.addEventListener('mousedown', handleStart);
+    window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleEnd);
 
-    // Dokunmatik Etkinlikleri
-    paper.addEventListener('touchstart', handleStart, { passive: false });
+    workspace.addEventListener('touchstart', handleStart, { passive: false });
     window.addEventListener('touchmove', handleMove, { passive: false });
     window.addEventListener('touchend', handleEnd);
   </script>
