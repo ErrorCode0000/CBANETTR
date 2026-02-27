@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Serbest Çizgi ile 3D Origami</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dokunmatik Destekli 3D Origami</title>
 <style>
   body {
     display: flex;
@@ -19,9 +19,10 @@
 
   .info-text {
     color: #ecf0f1;
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 20px;
     text-align: center;
+    padding: 0 20px;
   }
 
   /* 3D Kamera Perspektifi */
@@ -32,26 +33,30 @@
   /* Ana Kağıt Alanı */
   .paper-container {
     position: relative;
-    width: 600px;
-    height: 400px;
+    /* Mobilde daha iyi görünmesi için genişliği max-width ile sınırladık */
+    width: 90vw; 
+    max-width: 600px;
+    height: 60vw;
+    max-height: 400px;
     cursor: crosshair;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    background-color: #bdc3c7; /* Katlanınca altta kalacak gölge zemin */
+    background-color: #bdc3c7;
+    
+    /* ÇOK ÖNEMLİ: Dokunmatik cihazlarda çizim yaparken sayfanın kaymasını engeller */
+    touch-action: none; 
   }
 
-  /* Kağıdın İki Parçası (Başlangıçta üst üste duruyorlar) */
+  /* Kağıdın İki Parçası */
   .paper-layer {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
-    
-    /* Katlandığı anlaşılsın diye kağıda desen ve yazı ekliyoruz */
+    background: linear-gradient(135deg, #3498db 0%, #9b59b6 100%);
     background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2));
     background-size: 40px 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 100px;
+    font-size: clamp(40px, 8vw, 80px); /* Ekran boyutuna göre yazı büyüklüğü */
     font-weight: bold;
     color: rgba(255,255,255,0.3);
     
@@ -59,22 +64,20 @@
     transition: transform 1s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
-  /* Çizdiğimiz kırmızı eksen çizgisi */
   .draw-line {
     position: absolute;
     height: 3px;
-    background-color: #e74c3c;
+    background-color: #f1c40f;
     transform-origin: 0 50%;
-    pointer-events: none; /* Fare etkileşimini engelle */
+    pointer-events: none;
     z-index: 10;
     display: none;
-    box-shadow: 0 0 10px #e74c3c;
+    box-shadow: 0 0 10px #f1c40f;
   }
 
-  #part1 { z-index: 2; } /* Katlanacak olan hareketli parça */
-  #part2 { z-index: 1; } /* Sabit kalacak olan parça */
+  #part1 { z-index: 2; }
+  #part2 { z-index: 1; }
 
-  /* Katlandığında hareketli parçaya gölge ekle */
   #part1.folded {
     filter: drop-shadow(-5px 10px 15px rgba(0,0,0,0.4));
   }
@@ -83,14 +86,14 @@
 <body>
 
   <div class="info-text">
-    👆 <b>Tıkla ve Sürükle:</b> Kağıt üzerinde bir çizgi çek ve bırak! <br>
-    <span style="font-size: 14px; opacity: 0.8;">Açmak için tekrar tıkla.</span>
+    👆 <b>Çiz ve Katla:</b> Ekranda bir çizgi çek ve bırak! <br>
+    <span style="font-size: 14px; opacity: 0.8;">Açmak için tekrar dokun.</span>
   </div>
 
   <div class="scene">
     <div class="paper-container" id="paper">
-      <div class="paper-layer" id="part2">ORIGAMI</div>
-      <div class="paper-layer" id="part1">ORIGAMI</div>
+      <div class="paper-layer" id="part2">KATLA</div>
+      <div class="paper-layer" id="part1">KATLA</div>
       <div class="draw-line" id="line"></div>
     </div>
   </div>
@@ -105,9 +108,18 @@
     let isFolded = false;
     let startX, startY;
 
-    // 1. Çizmeye Başla
-    paper.addEventListener('mousedown', (e) => {
-      // Eğer zaten katlıysa, önce kağıdı düzelt
+    // Fare ve Dokunmatik koordinatlarını ortak bir formatta alan yardımcı fonksiyon
+    function getPointerPos(e) {
+      if (e.touches && e.touches.length > 0) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      } else if (e.changedTouches && e.changedTouches.length > 0) {
+        return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      }
+      return { x: e.clientX, y: e.clientY };
+    }
+
+    // Çizime Başlama (Hem mousedown hem touchstart için ortak)
+    function handleStart(e) {
       if (isFolded) {
         part1.style.transform = 'none';
         part1.style.clipPath = 'none';
@@ -118,23 +130,27 @@
         return;
       }
 
+      const pos = getPointerPos(e);
       const rect = paper.getBoundingClientRect();
-      startX = e.clientX - rect.left;
-      startY = e.clientY - rect.top;
+      startX = pos.x - rect.left;
+      startY = pos.y - rect.top;
       isDrawing = true;
       
       line.style.display = 'block';
       line.style.width = '0px';
       line.style.left = startX + 'px';
       line.style.top = startY + 'px';
-    });
+    }
 
-    // 2. Çizgiyi Sürükle (Görsel Animasyon)
-    paper.addEventListener('mousemove', (e) => {
+    // Çizgiyi Sürükleme (Hem mousemove hem touchmove için ortak)
+    function handleMove(e) {
       if (!isDrawing) return;
+      e.preventDefault(); // Dokunmatik ekranlarda kaydırmayı engeller
+
+      const pos = getPointerPos(e);
       const rect = paper.getBoundingClientRect();
-      let currentX = e.clientX - rect.left;
-      let currentY = e.clientY - rect.top;
+      let currentX = pos.x - rect.left;
+      let currentY = pos.y - rect.top;
       
       let dx = currentX - startX;
       let dy = currentY - startY;
@@ -143,62 +159,63 @@
       
       line.style.width = length + 'px';
       line.style.transform = `rotate(${angle}deg)`;
-    });
+    }
 
-    // 3. Fişi Çek ve Katla!
-    window.addEventListener('mouseup', (e) => {
+    // Çizimi Bitirme ve Katlama (Hem mouseup hem touchend için ortak)
+    function handleEnd(e) {
       if (!isDrawing) return;
       isDrawing = false;
       
+      const pos = getPointerPos(e);
       const rect = paper.getBoundingClientRect();
-      let endX = e.clientX - rect.left;
-      let endY = e.clientY - rect.top;
+      let endX = pos.x - rect.left;
+      let endY = pos.y - rect.top;
       
       let dx = endX - startX;
       let dy = endY - startY;
       let length = Math.sqrt(dx*dx + dy*dy);
       
-      // Eğer çok kısa bir çizgi çekildiyse iptal et (Sadece tıklama yapılmış olabilir)
       if (length < 20) { 
         line.style.display = 'none';
         return; 
       }
 
-      // --- İŞİN MATEMATİK KISMI ---
-      // Çizginin vektör yönünü (u) ve ona dik olan normal vektörünü (n) bul
       let ux = dx / length;
       let uy = dy / length;
       let nx = -uy;
       let ny = ux;
       
-      // Kağıdı bölecek devasa çokgenler (Polygon) oluşturmak için çarpan
       let K = 5000; 
       
-      // Çizgiyi sonsuza uzat (Görünmez makas kesikleri)
       let p1x = startX - ux * K; let p1y = startY - uy * K;
       let p2x = startX + ux * K; let p2y = startY + uy * K;
       
-      // 1. Parçanın maskesi (Çizginin bir tarafı)
       let c1x = p2x + nx * K; let c1y = p2y + ny * K;
       let c2x = p1x + nx * K; let c2y = p1y + ny * K;
       part1.style.clipPath = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c1x}px ${c1y}px, ${c2x}px ${c2y}px)`;
       
-      // 2. Parçanın maskesi (Çizginin diğer tarafı)
       let c3x = p2x - nx * K; let c3y = p2y - ny * K;
       let c4x = p1x - nx * K; let c4y = p1y - ny * K;
       part2.style.clipPath = `polygon(${p1x}px ${p1y}px, ${p2x}px ${p2y}px, ${c3x}px ${c3y}px, ${c4x}px ${c4y}px)`;
       
-      // Katlama menteşesini (orijinini) çizginin başladığı yere taşı
       part1.style.transformOrigin = `${startX}px ${startY}px`;
       
-      // 3D uzayda tam çizginin (dx, dy) ekseni etrafında 179 derece döndür!
-      // (180 yapmıyoruz ki Z düzleminde diğer kağıdın içine girip glitch yapmasın)
       setTimeout(() => {
         part1.style.transform = `rotate3d(${dx}, ${dy}, 0, 179deg)`;
         part1.classList.add('folded');
         isFolded = true;
       }, 50);
-    });
+    }
+
+    // Fare Etkinlikleri
+    paper.addEventListener('mousedown', handleStart);
+    window.addEventListener('mousemove', handleMove); // Window'a bağladık ki hızlı çizimlerde kağıttan çıkılsa bile çizgi takip etsin
+    window.addEventListener('mouseup', handleEnd);
+
+    // Dokunmatik Etkinlikleri
+    paper.addEventListener('touchstart', handleStart, { passive: false });
+    window.addEventListener('touchmove', handleMove, { passive: false });
+    window.addEventListener('touchend', handleEnd);
   </script>
 
 </body>
