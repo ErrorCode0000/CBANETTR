@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher</title>
+    <style>
+        :root {
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+
+        body {
+            background: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-align: center;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+
+        .input-group { margin-bottom: 24px; }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        textarea, input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        textarea:focus, input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        #shift { width: 100px; text-align: center; }
+
+        .result-container {
+            margin-top: 32px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+        }
+
+        #output {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #a5b4fc;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        input[type=number]::-webkit-inner-spin-button { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>CAESAR CIPHER</h1>
+    <p class="subtitle">Offline Encryption Tool</p>
+
+    <div class="input-group">
+        <label>Text Message</label>
+        <textarea id="msg" rows="4" placeholder="Type your message here..."></textarea>
+    </div>
+
+    <div class="flex-row input-group">
+        <div style="flex: 1;">
+            <label>Shift Amount</label>
+            <input type="number" id="shift" value="3" min="-25" max="25">
+        </div>
+        <div style="flex: 2; text-align: right;">
+            <p style="font-size: 0.75rem; color: var(--text-dim);">Positive for Encrypt<br>Negative for Decrypt</p>
+        </div>
+    </div>
+
+    <div class="result-container">
+        <label style="color: var(--accent);">Result</label>
+        <button class="copy-btn" onclick="copy()">Copy</button>
+        <div id="output">...</div>
+    </div>
+</div>
+
+<script>
+    const msgInput = document.getElementById('msg');
+    const shiftInput = document.getElementById('shift');
+    const outputDiv = document.getElementById('output');
+
+    function processCipher() {
+        let text = msgInput.value;
+        let s = parseInt(shiftInput.value) || 0;
+        
+        // Handle rotation for Caesar logic
+        if (s < 0) s = 26 + (s % 26);
+
+        let result = text.split('').map(char => {
+            if (char.match(/[a-z]/i)) {
+                let code = char.charCodeAt(0);
+                let base = (code >= 65 && code <= 90) ? 65 : 97;
+                return String.fromCharCode(((code - base + s) % 26) + base);
+            }
+            return char;
+        }).join('');
+
+        outputDiv.innerText = text ? result : "...";
+    }
+
+    function copy() {
+        const text = outputDiv.innerText;
+        if(text !== "...") {
+            navigator.clipboard.writeText(text);
+            const btn = document.querySelector('.copy-btn');
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = "Copy", 2000);
+        }
+    }
+
+    msgInput.addEventListener('input', processCipher);
+    shiftInput.addEventListener('input', processCipher);
+</script>
+
+</body>
+</html>
