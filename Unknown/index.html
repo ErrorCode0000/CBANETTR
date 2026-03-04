@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosch ve Rende Kaşar Çölü'nün Sırrı</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #e9ecef;
+            color: #212529;
+            line-height: 1.8;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+            transition: background-color 0.5s;
+        }
+        .story-container {
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+        h1 {
+            text-align: center;
+            color: #005691;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #e20015;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 20px;
+        }
+        h2 {
+            color: #005691;
+            font-size: 1.5em;
+            margin-top: 40px;
+            border-left: 4px solid #e20015;
+            padding-left: 10px;
+        }
+        p { font-size: 1.1em; color: #495057; }
+        ul {
+            background-color: #f8f9fa;
+            padding: 20px 20px 20px 40px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        li { margin-bottom: 10px; color: #495057; }
+        blockquote {
+            background: #f8f9fa;
+            border-left: 5px solid #005691;
+            margin: 30px 0;
+            padding: 20px;
+            font-style: italic;
+            font-size: 1.15em;
+            border-radius: 0 8px 8px 0;
+            color: #343a40;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 1.1em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        th, td { padding: 15px; text-align: left; }
+        th { background-color: #005691; color: white; border-bottom: 3px solid #e20015; }
+        td { background-color: #ffffff; border-bottom: 1px solid #dee2e6; }
+        tr:hover td { background-color: #f1f3f5; }
+        
+        /* JavaScript Butonu ve Efektleri */
+        #spinButton {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #e20015;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(226, 0, 21, 0.4);
+            z-index: 100;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        #spinButton:hover {
+            transform: scale(1.1);
+            background-color: #b30010;
+        }
+
+        /* Titreme (Makine Sıkma) Animasyonu */
+        .shake-active {
+            animation: shake 0.1s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Yukarıdan Düşen Cisimler */
+        .falling-item {
+            position: fixed;
+            top: -50px;
+            font-size: 2.5em;
+            z-index: 5;
+            animation: fallAndSpin 3s linear forwards;
+        }
+        @keyframes fallAndSpin {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(1080deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="spinButton">🌀 1200 Devirde Sık!</button>
+
+    <div class="story-container" id="mainCard">
+        <h1>Bosch ve Rende Kaşar Çölü'nün Sırrı</h1>
+        <div class="subtitle">A+++ Bir Galaksiler Arası Macera</div>
+
+        <h2>Bölüm 1: Yerçekimine İnanmayan Patates ve Deterjan Gözü</h2>
+        <p>Bosch, o Salı sabahı uyandığında kendini devasa bir rende kaşar çölünün ortasında buldu. Neden mi? Çünkü amcası bir tükenmez kalemdi ve ona hep "Eğer güneye uçarsan, salatalıklar seni affeder" derdi. Bosch, çelik tamburunu temizledi ve yürümeye başladı.</p>
+        <p>Yolculuğa çıkmadan önce deterjan gözünü kontrol etti. İçinde oldukça stratejik malzemeler vardı:</p>
+        <ul>
+            <li>Üç adet asimetrik uzay-zaman bükücü gömlek düğmesi.</li>
+            <li>Yarım kilo taze dökülmüş, hafif nemli sonbahar hüznü.</li>
+            <li>Kendi kullanma kılavuzunun sadece Antik Mısırca yazılmış 42. sayfası.</li>
+        </ul>
+        <p>Yolda, amuda kalkmış halde duran, depresyonda bir mor patatesle karşılaştı.</p>
+        <blockquote>
+            "Neden ters duruyorsun?" diye sordu Bosch, dijital ekranından bir soru işareti çıkartarak.<br><br>
+            Patates iç çekti: "Çünkü yerçekimi aslında bir illüzyondur ve benim canım inanılmaz derecede lahmacun çekiyor."
+        </blockquote>
+
+        <h2>Bölüm 2: Kozmik Sınıflandırma</h2>
+        <p>Patates, Bosch'un çölü geçebilmesi için ona anlamsız bir test yaptı. Kendi cebinden çıkardığı mantıksız nesneleri sınıflandırmasını istedi. Bosch, Alman mühendisliğinin verdiği analitik zekayla derhal şu tabloyu oluşturdu:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nesne</th>
+                    <th>Rengi</th>
+                    <th>Evrendeki Gizli Amacı</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Yarım Terlik</strong></td>
+                    <td>Saydam Sarı</td>
+                    <td>Wi-Fi sinyallerini kornişona çevirmek</td>
+                </tr>
+                <tr>
+                    <td><strong>Ağlayan Pense</strong></td>
+                    <td>Fosforlu Gri</td>
+                    <td>Asfaltı şefkatle ütülemek</td>
+                </tr>
+                <tr>
+                    <td><strong>Müzikal Brokoli</strong></td>
+                    <td>Bluetooth</td>
+                    <td>Penguenlere salsa öğretmek</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Bölüm 3: 1200 Devirde Zaman Yolculuğu</h2>
+        <p>Tabloyu gören patates o kadar etkilendi ki, aniden buharlaşıp bir operet sanatçısına dönüştü ve gökyüzüne doğru süzüldü. Bosch, yolunun açıldığını fark edip kendini <strong>"1200 Devir - Pamuklular"</strong> programına aldı.</p>
+        <p>Kendi etrafında o kadar hızlı döndü ki, zaman ve mekan pamuklu bir kazak gibi çekip küçüldü. Bosch, kendini bir anda 19. yüzyılda, Napolyon'un çadırında buldu. Napolyon, elindeki haritayı bırakıp Bosch'a yaklaştı ve kulağına fısıldadı:</p>
+        <blockquote>
+            <strong>"Aslında Waterloo savaşını kaybetmedim, sadece fırının fişini çekmeyi unutmuşum."</strong>
+        </blockquote>
+    </div>
+
+    <script>
+        const spinButton = document.getElementById('spinButton');
+        const mainCard = document.getElementById('mainCard');
+        const body = document.body;
+        let isSpinning = false;
+        let rainInterval;
+
+        const itemsToFall = ['🧦', '🥔', '🥦', '👔', '🫧', '🌀'];
+
+        spinButton.addEventListener('click', () => {
+            if (!isSpinning) {
+                // Sıkma modunu başlat
+                isSpinning = true;
+                mainCard.classList.add('shake-active');
+                body.style.backgroundColor = '#005691'; // Arka plan Bosch mavisi olsun
+                spinButton.innerText = '🛑 Programı İptal Et';
+                spinButton.style.backgroundColor = '#343a40';
+
+                // Eşya yağmurunu başlat
+                rainInterval = setInterval(createFallingItem, 200);
+            } else {
+                // Sıkma modunu durdur
+                isSpinning = false;
+                mainCard.classList.remove('shake-active');
+                body.style.backgroundColor = '#e9ecef';
+                spinButton.innerText = '🌀 1200 Devirde Sık!';
+                spinButton.style.backgroundColor = '#e20015';
+
+                clearInterval(rainInterval);
+            }
+        });
+
+        function createFallingItem() {
+            const item = document.createElement('div');
+            item.classList.add('falling-item');
+            
+            // Rastgele bir emoji seç
+            item.innerText = itemsToFall[Math.floor(Math.random() * itemsToFall.length)];
+            
+            // Ekranın üstünde rastgele yatay bir pozisyon belirle
+            item.style.left = Math.random() * 100 + 'vw';
+            
+            // Farklı boyutlar
+            item.style.fontSize = (Math.random() * 2 + 1) + 'em';
+            
+            // Ekrana ekle
+            document.body.appendChild(item);
+
+            // Animasyon bitince elementi DOM'dan temizle ki tarayıcı yorulmasın
+            setTimeout(() => {
+                item.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
