@@ -13,6 +13,8 @@
             --neon-yellow: #fffb00;
             --neon-purple: #8a2be2;
             --neon-cyan: #00ffff;
+            --neon-orange: #ff8c00;
+            --neon-gold: #ffd700;
         }
 
         * {
@@ -32,6 +34,7 @@
             height: 100vh;
             overflow: hidden;
             background-image: radial-gradient(circle at center, #111 0%, #000 100%);
+            transition: background-color 0.2s ease;
         }
 
         h1 {
@@ -61,6 +64,8 @@
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(255, 0, 234, 0.2), inset 0 0 20px rgba(255, 0, 234, 0.1);
             max-height: 90vh;
+            transition: transform 0.1s ease;
+            position: relative;
         }
 
         canvas#tetris {
@@ -76,30 +81,38 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            width: 15vw;
-            min-width: 200px;
+            width: 16vw;
+            min-width: 220px;
         }
 
         .info-box {
             background: #000;
             border: 1px solid var(--neon-blue);
-            padding: 15px;
+            padding: 10px;
             border-radius: 5px;
             box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.2);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
-        .info-box h2 { font-size: 1.2rem; color: #aaa; margin-bottom: 5px; }
-        .info-box p { font-size: 2rem; color: var(--neon-yellow); font-weight: bold; }
+        .info-box h2 { font-size: 1rem; color: #aaa; margin-bottom: 5px; }
+        .info-box p { font-size: 1.8rem; color: var(--neon-yellow); font-weight: bold; }
         
         #hold-status { font-size: 1.2rem; color: var(--neon-pink); }
 
-        .controls-info, .special-legend {
-            font-size: 0.85rem;
-            color: #888;
-            line-height: 1.5;
+        .store-box {
+            background: rgba(255, 251, 0, 0.1);
+            border: 1px solid var(--neon-yellow);
         }
+        .store-box h2 { color: var(--neon-yellow); }
+        .store-item { font-size: 0.85rem; margin-top: 5px; color: #ccc;}
+        .store-item span { color: var(--neon-yellow); font-weight: bold; }
+        .coin-text { color: var(--neon-gold) !important; text-shadow: 0 0 5px var(--neon-gold); font-size: 1.2rem;}
 
+        .controls-info, .special-legend {
+            font-size: 0.80rem;
+            color: #888;
+            line-height: 1.4;
+        }
         .controls-info span { color: var(--neon-pink); font-weight: bold; }
         
         .special-legend {
@@ -107,8 +120,28 @@
             border: 1px dashed var(--neon-red);
             background: rgba(255, 0, 60, 0.1);
             overflow-y: auto;
+            max-height: 20vh;
         }
-        .special-legend h3 { color: var(--neon-red); margin-bottom: 5px; font-size: 1rem;}
+        .special-legend h3 { color: var(--neon-red); margin-bottom: 5px; font-size: 0.9rem;}
+
+        /* GAME OVER SCREEN */
+        #game-over-screen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 10px;
+        }
+        #game-over-screen h2 { color: var(--neon-red); font-size: 2.5rem; text-shadow: 0 0 10px var(--neon-red); margin-bottom: 10px;}
+        #countdown { font-size: 5rem; color: var(--neon-gold); text-shadow: 0 0 20px var(--neon-gold); margin: 10px 0;}
+        .revive-text { color: #fff; font-size: 1rem; margin-bottom: 5px;}
+        .revive-cost { color: var(--neon-gold); font-weight: bold; font-size: 1.2rem;}
+        .revive-btn { margin-top: 15px; padding: 10px; border: 1px solid var(--neon-gold); background: transparent; color: var(--neon-gold); font-family: inherit; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -118,6 +151,14 @@
     <div class="game-wrapper">
         <canvas id="tetris" width="300" height="600"></canvas>
         
+        <div id="game-over-screen">
+            <h2>SYSTEM FAILURE</h2>
+            <div class="revive-text">Continue Protocol?</div>
+            <div class="revive-cost">Cost: 5 Gold Coins</div>
+            <h1 id="countdown">5</h1>
+            <div class="revive-text" style="color:#aaa; font-size:0.8rem;">[ENTER] to Revive | [ESC] to Abort</div>
+        </div>
+
         <div class="hud">
             <div class="info-box">
                 <h2>SCORE</h2>
@@ -125,23 +166,31 @@
             </div>
 
             <div class="info-box">
-                <h2>HOLD (Press C)</h2>
+                <h2>HOLD (Press H)</h2>
                 <p id="hold-status">EMPTY</p>
+            </div>
+
+            <div class="info-box store-box">
+                <h2>INVENTORY</h2>
+                <div class="store-item">COINS: <span class="coin-text" id="coin-count">0</span></div>
+                <div class="store-item" style="margin-top:10px;">[1] Buy NUKE : <span>10000 Pts</span></div>
+                <div class="store-item">[N] Use NUKE : <span id="nuke-count">0</span></div>
             </div>
             
             <div class="controls-info">
                 <p><span>ARROWS</span> : Move/Drop</p>
                 <p><span>UP</span> : Rotate</p>
                 <p><span>SPACE</span> : Hard Drop</p>
-                <p><span>C</span> : Hold Piece</p>
+                <p><span>H</span> : Hold Piece</p>
             </div>
 
             <div class="special-legend">
-                <h3>SPECIALS</h3>
+                <h3>SPECIAL BLOCKS</h3>
+                <p><span style="color:var(--neon-gold);">COIN (Gold)</span>: Absorbs blocks for Coins!</p>
                 <p><span style="color:var(--neon-red);">BOMB</span>: Destroys 3x3 area.</p>
-                <p><span style="color:var(--neon-yellow);">NUKE</span>: Clears the board.</p>
                 <p><span style="color:var(--neon-purple);">LASER</span>: Destroys column.</p>
                 <p><span style="color:var(--neon-cyan);">FROST</span>: Slows time 5s.</p>
+                <p><span style="color:var(--neon-orange);">GRAVITY</span>: Drops all blocks!</p>
             </div>
         </div>
     </div>
@@ -151,6 +200,8 @@
         const context = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
         const holdElement = document.getElementById('hold-status');
+        const nukeCountElement = document.getElementById('nuke-count');
+        const coinCountElement = document.getElementById('coin-count');
         
         context.scale(30, 30);
 
@@ -164,9 +215,11 @@
             '#FFE138', // 6: J
             '#3877FF', // 7: O
             '#ff003c', // 8: BOMB 
-            '#fffb00', // 9: NUKE 
+            null,      // 9: NUKE (Envanterde)
             '#00ffff', // 10: FROST
-            '#8a2be2'  // 11: LASER
+            '#8a2be2', // 11: LASER
+            '#ff8c00', // 12: GRAVITY
+            '#ffd700'  // 13: COIN (YENİ)
         ];
 
         function createMatrix(w, h) {
@@ -179,11 +232,24 @@
 
         let heldPiece = null;
         let canHold = true;
+        let isGameOver = false;
+        let continueTimer = 5;
+        let continueInterval = null;
+        let animationId = null;
+        
+        // ENVANTER SİSTEMİ (Sayfa yenilenirse uçar)
+        const inventory = { nukes: 0, coins: 0 };
+
+        function updateStoreUI() {
+            nukeCountElement.innerText = inventory.nukes;
+            coinCountElement.innerText = inventory.coins;
+            updateScore(); 
+        }
 
         function drawMatrix(matrix, offset, isGhost = false) {
             matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
-                    if (value !== 0) {
+                    if (value !== 0 && value !== 9) { 
                         context.fillStyle = isGhost ? 'rgba(255, 255, 255, 0.2)' : colors[value];
                         context.fillRect(x + offset.x, y + offset.y, 1, 1);
                         if (!isGhost) {
@@ -199,13 +265,8 @@
         }
 
         function drawGhost() {
-            const ghost = {
-                matrix: player.matrix,
-                pos: { x: player.pos.x, y: player.pos.y }
-            };
-            while (!collide(arena, ghost)) {
-                ghost.pos.y++;
-            }
+            const ghost = { matrix: player.matrix, pos: { x: player.pos.x, y: player.pos.y } };
+            while (!collide(arena, ghost)) ghost.pos.y++;
             ghost.pos.y--;
             drawMatrix(ghost.matrix, ghost.pos, true);
         }
@@ -232,27 +293,35 @@
         }
 
         function merge(arena, player) {
-            let isBomb = false, isNuke = false, isFrost = false, isLaser = false;
+            let isBomb = false, isFrost = false, isLaser = false, isGravity = false, isCoinBlock = false;
             let targetX = 0, targetY = 0;
 
             player.matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
                         if (value === 8) { isBomb = true; targetX = x + player.pos.x; targetY = y + player.pos.y; }
-                        if (value === 9) isNuke = true;
                         if (value === 10) isFrost = true;
                         if (value === 11) { isLaser = true; targetX = x + player.pos.x; }
+                        if (value === 12) isGravity = true;
+                        if (value === 13) isCoinBlock = true;
                         
                         arena[y + player.pos.y][x + player.pos.x] = value;
                     }
                 });
             });
 
-            if (isNuke) activateNuke();
-            else if (isBomb) activateBomb(targetX, targetY);
+            if (isBomb) activateBomb(targetX, targetY);
             else if (isLaser) activateLaser(targetX);
+            else if (isGravity) activateGravity();
+            else if (isCoinBlock) activateCoinBlock();
             
             if (isFrost) activateFrost();
+        }
+
+        function activateNuke() {
+            for (let y = 0; y < arena.length; y++) arena[y].fill(0);
+            document.body.style.backgroundColor = 'var(--neon-yellow)';
+            setTimeout(() => { document.body.style.backgroundColor = 'var(--bg-color)'; }, 150);
         }
 
         function activateBomb(cx, cy) {
@@ -261,19 +330,10 @@
                     if(y >= 0 && y < arena.length && x >= 0 && x < arena[0].length) arena[y][x] = 0;
                 }
             }
-            player.score += 500;
-        }
-
-        function activateNuke() {
-            for (let y = 0; y < arena.length; y++) arena[y].fill(0);
-            player.score += 2000;
-            document.body.style.backgroundColor = '#fff';
-            setTimeout(() => { document.body.style.backgroundColor = 'var(--bg-color)'; }, 100);
         }
 
         function activateLaser(col) {
             for(let y = 0; y < arena.length; y++) arena[y][col] = 0;
-            player.score += 300;
         }
 
         function activateFrost() {
@@ -285,11 +345,58 @@
             }, 5000);
         }
 
+        function activateGravity() {
+            for (let x = 0; x < arena[0].length; x++) {
+                let writeY = arena.length - 1;
+                for (let y = arena.length - 1; y >= 0; y--) {
+                    if (arena[y][x] !== 0) {
+                        arena[writeY][x] = arena[y][x];
+                        if (writeY !== y) arena[y][x] = 0;
+                        writeY--;
+                    }
+                }
+            }
+            const gw = document.querySelector('.game-wrapper');
+            gw.style.transform = "translate(10px, 10px)";
+            setTimeout(() => gw.style.transform = "translate(-10px, -10px)", 50);
+            setTimeout(() => gw.style.transform = "translate(10px, -10px)", 100);
+            setTimeout(() => gw.style.transform = "translate(0, 0)", 150);
+        }
+
+        // YENİ ÖZELLİK: COIN BLOĞU MEKANİĞİ
+        function activateCoinBlock() {
+            let existingBlocks = [];
+            for (let y = 0; y < arena.length; y++) {
+                for (let x = 0; x < arena[y].length; x++) {
+                    if (arena[y][x] !== 0 && arena[y][x] !== 13) existingBlocks.push({y, x});
+                }
+            }
+            
+            // Rastgele %20 ile %60 arası bloğu yok et
+            let percentToDestroy = (Math.random() * 0.4) + 0.2;
+            let blocksToDestroy = Math.floor(existingBlocks.length * percentToDestroy);
+            
+            // Karıştır ve yok et
+            existingBlocks.sort(() => 0.5 - Math.random());
+            for(let i = 0; i < blocksToDestroy; i++) {
+                arena[existingBlocks[i].y][existingBlocks[i].x] = 0;
+            }
+
+            // Yok edilen blok sayısına oranla coin ver (En az 1, her 4 blok için +1)
+            let earnedCoins = Math.max(1, Math.floor(blocksToDestroy / 4));
+            inventory.coins += earnedCoins;
+            updateStoreUI();
+            
+            // Altın parlama efekti
+            document.body.style.backgroundColor = 'rgba(255, 215, 0, 0.3)';
+            setTimeout(() => document.body.style.backgroundColor = 'var(--bg-color)', 200);
+        }
+
         function playerHold() {
             if (!canHold) return;
             if (heldPiece === null) {
                 heldPiece = player.matrix;
-                playerReset();
+                playerReset(true);
             } else {
                 const temp = player.matrix;
                 player.matrix = heldPiece;
@@ -324,20 +431,23 @@
             else if (type === 'S') return [[0, 6, 6], [6, 6, 0], [0, 0, 0]];
             else if (type === 'Z') return [[7, 7, 0], [0, 7, 7], [0, 0, 0]];
             else if (type === 'BOMB') return [[8]]; 
-            else if (type === 'NUKE') return [[9]]; 
             else if (type === 'FROST') return [[10]];
             else if (type === 'LASER') return [[11]];
+            else if (type === 'GRAVITY') return [[12]];
+            else if (type === 'COIN') return [[13]];
         }
 
-        function playerReset() {
+        function playerReset(forceSpawn = false) {
             const pieces = 'ILJOTSZ';
             const rand = Math.random();
             let type;
             
-            if (rand < 0.02) type = 'NUKE'; 
-            else if (rand < 0.07) type = 'LASER';
-            else if (rand < 0.12) type = 'FROST';
-            else if (rand < 0.20) type = 'BOMB'; 
+            // İhtimal Tablosu: %3 Coin, %5 Gravity, %7 Laser, %12 Frost, %18 Bomb, Gerisi Normal
+            if (rand < 0.03) type = 'COIN'; 
+            else if (rand < 0.08) type = 'GRAVITY';
+            else if (rand < 0.15) type = 'LASER';
+            else if (rand < 0.27) type = 'FROST';
+            else if (rand < 0.45) type = 'BOMB'; 
             else type = pieces[pieces.length * Math.random() | 0];
 
             player.matrix = createPiece(type);
@@ -347,16 +457,13 @@
             canHold = true; 
             if(heldPiece !== null) holdElement.innerText = "READY";
 
-            if (collide(arena, player)) {
-                arena.forEach(row => row.fill(0));
-                player.score = 0;
-                heldPiece = null;
-                holdElement.innerText = "EMPTY";
-                updateScore();
+            if (collide(arena, player) && !forceSpawn) {
+                handleGameOver();
             }
         }
 
         function playerDrop() {
+            if(isGameOver) return;
             player.pos.y++;
             if (collide(arena, player)) {
                 player.pos.y--;
@@ -398,18 +505,67 @@
             else matrix.reverse();
         }
 
+        // --- GAME OVER VE REVIVE SİSTEMİ ---
+        function handleGameOver() {
+            isGameOver = true;
+            cancelAnimationFrame(animationId);
+            document.getElementById('game-over-screen').style.display = 'flex';
+            continueTimer = 5;
+            document.getElementById('countdown').innerText = continueTimer;
+            
+            continueInterval = setInterval(() => {
+                continueTimer--;
+                document.getElementById('countdown').innerText = continueTimer;
+                if(continueTimer <= 0) {
+                    executeDeath();
+                }
+            }, 1000);
+        }
+
+        function executeDeath() {
+            clearInterval(continueInterval);
+            document.getElementById('game-over-screen').style.display = 'none';
+            arena.forEach(row => row.fill(0));
+            player.score = 0;
+            heldPiece = null;
+            inventory.nukes = 0;
+            // Coinler silinmez! (Sadece sayfa yenilenince JS belleği uçtuğu için silinir)
+            updateStoreUI();
+            holdElement.innerText = "EMPTY";
+            isGameOver = false;
+            playerReset(true);
+            update();
+        }
+
+        function executeRevive() {
+            if (inventory.coins >= 5) {
+                inventory.coins -= 5;
+                clearInterval(continueInterval);
+                document.getElementById('game-over-screen').style.display = 'none';
+                
+                // Nefes alması için tahtayı temizle ama skor aynen kalır
+                arena.forEach(row => row.fill(0)); 
+                
+                updateStoreUI();
+                isGameOver = false;
+                playerReset(true);
+                update();
+            }
+        }
+
         let dropCounter = 0;
         let dropInterval = 1000;
         let lastTime = 0;
 
         function update(time = 0) {
+            if(isGameOver) return;
             const deltaTime = time - lastTime;
             lastTime = time;
             dropCounter += deltaTime;
             if (dropCounter > dropInterval) playerDrop();
             
             draw();
-            requestAnimationFrame(update);
+            animationId = requestAnimationFrame(update);
         }
 
         function updateScore() {
@@ -421,23 +577,78 @@
 
         const player = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
 
+        // HİLE KODLARI (CHEAT CODES) TAKİPÇİLERİ
+        let cbaCode = ['c', 'b', 'a'];
+        let cbaIndex = 0;
+        let coinCode = ['c', 'o', 'i', 'n'];
+        let coinIndex = 0;
+
         document.addEventListener('keydown', event => {
+            const key = event.key.toLowerCase();
+
+            // CBA Hilesi (Nuke Verir)
+            if (key === cbaCode[cbaIndex]) {
+                cbaIndex++;
+                if (cbaIndex === cbaCode.length) {
+                    inventory.nukes++;
+                    updateStoreUI();
+                    document.body.style.backgroundColor = 'var(--neon-pink)';
+                    setTimeout(() => document.body.style.backgroundColor = 'var(--bg-color)', 200);
+                    cbaIndex = 0;
+                }
+            } else { cbaIndex = (key === cbaCode[0]) ? 1 : 0; }
+
+            // COIN Hilesi (Altın Verir)
+            if (key === coinCode[coinIndex]) {
+                coinIndex++;
+                if (coinIndex === coinCode.length) {
+                    inventory.coins++;
+                    updateStoreUI();
+                    document.body.style.backgroundColor = 'var(--neon-gold)';
+                    setTimeout(() => document.body.style.backgroundColor = 'var(--bg-color)', 200);
+                    coinIndex = 0;
+                }
+            } else { coinIndex = (key === coinCode[0]) ? 1 : 0; }
+
+            // EĞER ÖLÜYSEK SADECE ENTER VE ESC ÇALIŞIR
+            if (isGameOver) {
+                if (event.key === 'Enter') executeRevive();
+                if (event.key === 'Escape') executeDeath();
+                return;
+            }
+
+            // OYUN KONTROLLERİ
             if (event.keyCode === 37) { playerMove(-1); } 
             else if (event.keyCode === 39) { playerMove(1); } 
             else if (event.keyCode === 40) { playerDrop(); } 
             else if (event.keyCode === 38) { playerRotate(1); } 
-            else if (event.keyCode === 32) { 
+            else if (event.keyCode === 32) { // Space
                 while (!collide(arena, player)) player.pos.y++;
                 player.pos.y--;
                 playerDrop();
             }
-            else if (event.keyCode === 67) { 
+            else if (event.keyCode === 72) { // 'H' Tuşu (Hold)
                 playerHold();
+            }
+            else if (event.key === '1') { // MAĞAZA: NUKE AL
+                if (player.score >= 10000) {
+                    player.score -= 10000;
+                    inventory.nukes++;
+                    updateStoreUI();
+                }
+            }
+            else if (key === 'n') { // NUKE KULLAN
+                if (inventory.nukes > 0) {
+                    inventory.nukes--;
+                    activateNuke();
+                    updateStoreUI();
+                }
             }
         });
 
-        playerReset();
+        playerReset(true);
         updateScore();
+        updateStoreUI();
         update();
     </script>
 </body>
