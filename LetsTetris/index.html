@@ -174,7 +174,7 @@
                 <h2>INVENTORY</h2>
                 <div class="store-item">COINS: <span class="coin-text" id="coin-count">0</span></div>
                 <div class="store-item" style="margin-top:10px;">[1] Buy NUKE : <span>10000 Pts</span></div>
-                <div class="store-item">[N] Use NUKE : <span id="nuke-count">0</span></div>
+                <div class="store-item">[0] Use NUKE : <span id="nuke-count">0</span></div>
             </div>
             
             <div class="controls-info">
@@ -637,7 +637,7 @@
                     updateStoreUI();
                 }
             }
-            else if (key === 'n') { // NUKE KULLAN
+            else if (key === '0') { // NUKE KULLAN
                 if (inventory.nukes > 0) {
                     inventory.nukes--;
                     activateNuke();
