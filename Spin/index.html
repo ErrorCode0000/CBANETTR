@@ -1,140 +1,355 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spin Me!</title>
+    <title>Ultimate Fortune Wheel Pro</title>
     <style>
-        /* Dışarıdaki tüm boşlukları, kenar paylarını ve kaydırma çubuklarını yok ediyoruz */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* CSS RESET & CORE STYLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
         body {
             width: 100vw;
             height: 100vh;
+            background: radial-gradient(circle at center, #1a2a6c, #112 100%);
+            color: #fff;
+            overflow: hidden;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #2c3e50;
-            overflow: hidden; /* Çarkın dışındaki hiçbir şeye izin verme */
+            justify-content: space-between;
         }
 
-        /* Çarkın ve ibrenin içinde duracağı konteyner */
-        .wheel-container {
-            position: relative;
-            width: 90vmin;
-            height: 90vmin;
-            max-width: 500px;
-            max-height: 500px;
+        /* GLASSMORPHISM PANELS */
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Kusursuz çarkın tasarımı */
-        .wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* Çark dilimlerinin renkleri */
-            background: conic-gradient(
-                #e74c3c 0 60deg,
-                #f1c40f 60deg 120deg,
-                #2ecc71 120deg 180deg,
-                #3498db 180deg 240deg,
-                #9b59b6 240deg 300deg,
-                #e67e22 300deg 360deg
-            );
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-            border: 10px solid #ecf0f1;
-            /* Dönüş animasyonunun pürüzsüzlüğü (Sürtünme hissi veren cubic-bezier) */
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); 
-        }
+        /* LEFT SIDEBAR: CONTROLS */
+        .sidebar-left { width: 320px; height: 100vh; overflow-y: auto; }
+        .sidebar-left h2 { font-size: 1.2rem; color: #00d2ff; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        
+        .input-group { display: flex; gap: 10px; }
+        .input-group input { flex-grow: 1; padding: 10px; border-radius: 6px; border: none; background: rgba(255,255,255,0.9); outline: none; }
+        .input-group button, .btn { padding: 10px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; background: #00d2ff; color: #000; }
+        .btn:hover { background: #3a7bd5; color: #fff; transform: translateY(-2px); }
+        .btn-danger { background: #ff4b2b; color: white; }
+        .btn-danger:hover { background: #ff416c; }
 
-        /* Üstteki seçici ibre */
+        .settings-group { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; margin-top: 5px; }
+        
+        ul.item-list { list-style: none; display: flex; flex-direction: column; gap: 5px; flex-grow: 1; overflow-y: auto; max-height: 35vh; }
+        ul.item-list::-webkit-scrollbar { width: 4px; }
+        ul.item-list::-webkit-scrollbar-thumb { background: #00d2ff; }
+        ul.item-list li { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; }
+        ul.item-list li button { background: transparent; border: none; color: #ff4b2b; cursor: pointer; font-size: 1.2rem; }
+
+        .presets { display: flex; flex-wrap: wrap; gap: 5px; }
+        .presets button { flex: 1 1 45%; font-size: 0.8rem; padding: 8px; }
+
+        /* RIGHT SIDEBAR: HISTORY */
+        .sidebar-right { width: 280px; height: 100vh; }
+        .history-list { list-style: none; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+        .history-item { background: rgba(0, 210, 255, 0.1); border-left: 4px solid #00d2ff; padding: 10px; border-radius: 0 6px 6px 0; animation: slideIn 0.3s ease; }
+        .history-time { font-size: 0.7rem; color: #aaa; }
+        .history-winner { font-size: 1.1rem; font-weight: bold; color: #fff; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* MAIN WHEEL AREA */
+        .main-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+        
+        .wheel-container { position: relative; width: 80vmin; height: 80vmin; max-width: 650px; max-height: 650px; filter: drop-shadow(0 0 30px rgba(0, 210, 255, 0.2)); }
+        
+        canvas#wheelCanvas { width: 100%; height: 100%; border-radius: 50%; border: 15px solid rgba(255,255,255,0.9); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+
         .pointer {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 40px solid #ecf0f1;
-            z-index: 10;
-            filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.4));
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 60px solid #ff4b2b;
+            z-index: 10; filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.5));
         }
 
-        /* Merkezdeki çevirme butonu */
-        .center-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background-color: #ecf0f1;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: sans-serif;
-            font-weight: 900;
-            font-size: 16px;
-            color: #2c3e50;
-            cursor: pointer;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 5;
-            transition: transform 0.1s, background-color 0.2s;
-            user-select: none;
+        .spin-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100px; height: 100px; background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            border-radius: 50%; border: 5px solid #fff; color: #fff; font-weight: 900; font-size: 1.5rem;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 5; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            transition: 0.1s;
         }
+        .spin-btn:active { transform: translate(-50%, -45%) scale(0.95); box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
+        .spin-btn.disabled { filter: grayscale(1); cursor: not-allowed; }
 
-        /* Butona basılma efekti */
-        .center-button:active {
-            transform: translate(-50%, -50%) scale(0.95);
-            background-color: #bdc3c7;
+        /* CONFETTI CANVAS (Overlay) */
+        canvas#confettiCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
+
+        /* WINNER MODAL */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: linear-gradient(135deg, #112, #1a2a6c); padding: 50px; border-radius: 20px;
+            text-align: center; border: 2px solid #00d2ff; box-shadow: 0 0 50px rgba(0, 210, 255, 0.5); transform: scale(0.8); transition: 0.3s;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h1 { font-size: 3rem; color: #ff4b2b; margin-bottom: 10px; text-transform: uppercase; }
+        .modal-content p { font-size: 1.5rem; margin-bottom: 30px; }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar-left, .sidebar-right { width: 100%; height: auto; }
+            .main-content { padding: 50px 0; min-height: 60vh; }
+            ul.item-list { max-height: 200px; }
+            .history-list { max-height: 200px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="wheel-container">
-        <div class="pointer"></div>
+    <div class="panel sidebar-left">
+        <h2>Wheel Configuration</h2>
         
-        <div class="wheel" id="wheel"></div>
+        <div class="input-group">
+            <input type="text" id="itemInput" placeholder="Add new option..." maxlength="30">
+            <button id="addBtn" class="btn">Add</button>
+        </div>
+
+        <div class="settings-group">
+            <input type="checkbox" id="autoRemove">
+            <label for="autoRemove">Remove winner after spin</label>
+        </div>
+
+        <ul class="item-list" id="itemList"></ul>
         
-        <div class="center-button" id="spinBtn">Spin!</div>
+        <button id="clearBtn" class="btn btn-danger">Clear All</button>
+
+        <h2 style="margin-top: 10px;">Quick Presets</h2>
+        <div class="presets">
+            <button class="btn" onclick="loadPreset(['Yes', 'No', 'Maybe', 'Definitely'])">Yes / No</button>
+            <button class="btn" onclick="loadPreset(['1','2','3','4','5','6','7','8','9','10'])">Numbers 1-10</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <canvas id="wheelCanvas" width="1000" height="1000"></canvas>
+            <div class="spin-btn" id="spinBtn">SPIN</div>
+        </div>
+    </div>
+
+    <div class="panel sidebar-right">
+        <h2>Spin History</h2>
+        <ul class="history-list" id="historyList">
+            </ul>
+    </div>
+
+    <canvas id="confettiCanvas"></canvas>
+    
+    <div class="modal-overlay" id="winnerModal">
+        <div class="modal-content">
+            <h1 id="winnerText">WINNER!</h1>
+            <p>Congratulations!</p>
+            <button class="btn" id="closeModalBtn" style="width: 100%; font-size: 1.2rem;">AWESOME</button>
+        </div>
     </div>
 
     <script>
-        const wheel = document.getElementById('wheel');
+        // --- CORE VARIABLES ---
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
         const spinBtn = document.getElementById('spinBtn');
-        let currentRotation = 0;
+        const itemInput = document.getElementById('itemInput');
+        const itemList = document.getElementById('itemList');
+        const historyList = document.getElementById('historyList');
+        const autoRemove = document.getElementById('autoRemove');
+        const winnerModal = document.getElementById('winnerModal');
+        const winnerText = document.getElementById('winnerText');
+
+        let items = ["1", "2", "3", "4", "5"];
+        const colors = ["#ff4b2b", "#ff416c", "#f7b733", "#fc4a1a", "#00d2ff", "#3a7bd5", "#11998e", "#38ef7d", "#8e2de2", "#4a00e0"];
+        
+        let currentRotation = 0; // In degrees
         let isSpinning = false;
+        let lastTickSlice = -1; // To track when to play tick sound
+
+        // --- AUDIO ENGINE (Synthesized Tick) ---
+        let audioCtx;
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        function playTickSound() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.03);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.03);
+        }
+
+        // --- UI & WHEEL DRAWING ---
+        function renderList() {
+            itemList.innerHTML = "";
+            items.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerText = item;
+                const delBtn = document.createElement('button');
+                delBtn.innerHTML = "×";
+                delBtn.onclick = () => { if(!isSpinning) { items.splice(index, 1); renderAll(); } };
+                li.appendChild(delBtn);
+                itemList.appendChild(li);
+            });
+        }
+
+        function drawWheel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = centerX;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if(items.length === 0) return;
+
+            const arc = (Math.PI * 2) / items.length;
+
+            // We rotate context initially so that index 0 starts exactly at the TOP (-90deg)
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(-Math.PI / 2); // Shift starting point to 12 o'clock
+
+            for (let i = 0; i < items.length; i++) {
+                const angle = i * arc;
+
+                // Slices
+                ctx.beginPath();
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, angle, angle + arc);
+                ctx.fill();
+
+                // Separator Lines
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "rgba(0,0,0,0.3)";
+                ctx.stroke();
+
+                // Text Formatting
+                ctx.save();
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "#fff";
+                ctx.shadowColor = "rgba(0,0,0,0.5)";
+                ctx.shadowBlur = 4;
+                
+                let fontSize = Math.max(25, 350 / items.length);
+                if (fontSize > 55) fontSize = 55;
+                ctx.font = `bold ${fontSize}px sans-serif`;
+                
+                let text = items[i];
+                if(text.length > 18) text = text.substring(0, 15) + "...";
+                
+                ctx.fillText(text, radius - 40, 0); 
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+
+        function renderAll() { renderList(); drawWheel(); }
+
+        // --- INPUT HANDLING ---
+        document.getElementById('addBtn').onclick = () => {
+            const val = itemInput.value.trim();
+            if(val && !isSpinning) { items.push(val); itemInput.value = ""; renderAll(); }
+        };
+        itemInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') document.getElementById('addBtn').click(); });
+        document.getElementById('clearBtn').onclick = () => { if(!isSpinning) { items = []; renderAll(); } };
+
+        window.loadPreset = (presetArray) => {
+            if(!isSpinning) { items = [...presetArray]; renderAll(); }
+        }
+
+        // --- PHYSICS & ANIMATION ENGINE (The Math Magic) ---
+        function easeOutQuart(x) { return 1 - Math.pow(1 - x, 4); }
 
         spinBtn.addEventListener('click', () => {
-            // Eğer çark zaten dönüyorsa, tekrar basılmasını engelle
-            if (isSpinning) return;
+            if (isSpinning || items.length === 0) return;
+            initAudio(); // Initialize audio context on first user interaction
             isSpinning = true;
+            spinBtn.classList.add('disabled');
+            spinBtn.innerText = "WAIT...";
 
-            // Rastgele dönüş hesaplaması (En az 5, en fazla 10 tam tur döner)
-            const extraSpins = Math.floor(Math.random() * 5) + 5; 
-            // Seçilecek rastgele bir açı
-            const randomDegree = Math.floor(Math.random() * 360); 
+            // Physics params
+            const spinDuration = 8000; // 8 seconds
+            const extraRotations = 360 * (Math.floor(Math.random() * 5) + 6); // 6-10 full spins
+            const randomTargetDegree = Math.floor(Math.random() * 360);
             
-            // Mevcut dönüş açısının üzerine yeni dönüşü ekliyoruz ki her basışta kaldığı yerden devam etsin
-            currentRotation += (extraSpins * 360) + randomDegree;
+            const startAngle = currentRotation;
+            const targetAngle = currentRotation + extraRotations + randomTargetDegree;
+            
+            let startTime = null;
 
-            // Çarkı CSS transform ile çeviriyoruz
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                let progress = timeElapsed / spinDuration;
+                if (progress > 1) progress = 1;
 
-            // Animasyon süresi 4 saniye olduğu için, 4 saniye sonra tıklamaya tekrar izin veriyoruz
-            setTimeout(() => {
-                isSpinning = false;
-            }, 4000);
+                // Apply easing
+                const easedProgress = easeOutQuart(progress);
+                currentRotation = startAngle + (targetAngle - startAngle) * easedProgress;
+
+                // Calculate which slice is currently passing the pointer to play tick sound
+                // Normalize rotation to 0-360, but backwards because CSS rotate is clockwise
+                const degreesPerSlice = 360 / items.length;
+                const normalizedRotation = (360 - (currentRotation % 360)) % 360;
+                const currentSlice = Math.floor(normalizedRotation / degreesPerSlice);
+
+                if (currentSlice !== lastTickSlice && progress < 0.99) {
+                    playTickSound();
+                    lastTickSlice = currentSlice;
+                }
+
+                // Apply visual rotation via CSS transform (Hardware accelerated)
+                canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    finishSpin(currentSlice); // Pass the final winning slice index
+                }
+            }
+            requestAnimationFrame(animate);
         });
-    </script>
 
-</body>
-</html>
+        function finishSpin(winnerIndex) {
+            isSpinning = false;
+            spinBtn.classList.remove('disabled');
+            spinBtn.innerText = "SPIN";
+            
+            const winnerName = items[winnerIndex];
+            
+            // Show Winner Modal
+            winnerText.innerText = winnerName;
+            winnerModal.classList.add('active');
+            
+            // Fire Confetti
+            fireConfetti();
+
+            // Add to History
+            const date = new Date();
+            const timeString = `${date.getHours()}:${date.getMinutes().toString().padStart(2,
