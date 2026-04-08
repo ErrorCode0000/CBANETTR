@@ -175,7 +175,7 @@
         const winnerModal = document.getElementById('winnerModal');
         const winnerText = document.getElementById('winnerText');
 
-        let items = ["1", "2", "3", "4", "5"];
+        let items = ["1", "2", "3", "4", "5", "6", "7"];
         const colors = ["#ff4b2b", "#ff416c", "#f7b733", "#fc4a1a", "#00d2ff", "#3a7bd5", "#11998e", "#38ef7d", "#8e2de2", "#4a00e0"];
         
         let currentRotation = 0; // In degrees
@@ -352,4 +352,86 @@
 
             // Add to History
             const date = new Date();
-            const timeString = `${date.getHours()}:${date.getMinutes().toString().padStart(2,
+            const timeString = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+            const li = document.createElement('li');
+            li.className = 'history-item';
+            li.innerHTML = `<div class="history-time">${timeString}</div><div class="history-winner">${winnerName}</div>`;
+            historyList.prepend(li);
+
+            // Auto Remove logic
+            if(autoRemove.checked && items.length > 1) {
+                items.splice(winnerIndex, 1);
+                renderAll();
+            }
+        }
+
+        document.getElementById('closeModalBtn').onclick = () => {
+            winnerModal.classList.remove('active');
+            cancelConfetti();
+        };
+
+        // --- CONFETTI ENGINE ---
+        const confCanvas = document.getElementById('confettiCanvas');
+        const cCtx = confCanvas.getContext('2d');
+        let confParticles = [];
+        let confAnimationId;
+
+        function resizeConfetti() {
+            confCanvas.width = window.innerWidth;
+            confCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeConfetti);
+        resizeConfetti();
+
+        function fireConfetti() {
+            confParticles = [];
+            for(let i=0; i<150; i++) {
+                confParticles.push({
+                    x: Math.random() * confCanvas.width,
+                    y: Math.random() * confCanvas.height - confCanvas.height,
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 10 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: Math.random() * 5 + 2,
+                    vx: Math.random() * 4 - 2,
+                    rot: Math.random() * 360,
+                    rotSpeed: Math.random() * 10 - 5
+                });
+            }
+            if(!confAnimationId) animateConfetti();
+        }
+
+        function animateConfetti() {
+            cCtx.clearRect(0, 0, confCanvas.width, confCanvas.height);
+            let active = false;
+            for(let p of confParticles) {
+                p.y += p.vy;
+                p.x += p.vx;
+                p.rot += p.rotSpeed;
+                if(p.y < confCanvas.height) active = true;
+
+                cCtx.save();
+                cCtx.translate(p.x, p.y);
+                cCtx.rotate(p.rot * Math.PI / 180);
+                cCtx.fillStyle = p.color;
+                cCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                cCtx.restore();
+            }
+            if(active) {
+                confAnimationId = requestAnimationFrame(animateConfetti);
+            } else {
+                cancelConfetti();
+            }
+        }
+
+        function cancelConfetti() {
+            cancelAnimationFrame(confAnimationId);
+            confAnimationId = null;
+            cCtx.clearRect(0, 0, confCanvas.width, confCanvas.height);
+        }
+
+        // Initialize
+        renderAll();
+    </script>
+</body>
+</html>
